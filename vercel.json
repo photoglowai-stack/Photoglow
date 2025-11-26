@@ -13,29 +13,18 @@
             "maxDuration": 60
         }
     },
-    "routes": [
+    "rewrites": [
         {
-            "src": "/api/(.*)",
-            "dest": "/api/$1"
+            "source": "/v1/jobs",
+            "destination": "/api/v1-jobs.mjs"
         },
         {
-            "src": "/v1/jobs",
-            "dest": "/api/v1-jobs.mjs"
+            "source": "/v1/preview",
+            "destination": "/api/v1-preview.mjs"
         },
         {
-            "src": "/v1/preview",
-            "dest": "/api/v1-preview.mjs"
-        },
-        {
-            "src": "/v1/ideas/(.*)",
-            "dest": "/api/v1/ideas/$1"
-        },
-        {
-            "handle": "filesystem"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/index.html"
+            "source": "/v1/ideas/:path*",
+            "destination": "/api/v1/ideas/:path*"
         }
     ],
     "headers": [
@@ -56,8 +45,5 @@
                 }
             ]
         }
-    ],
-    "env": {
-        "NODE_ENV": "production"
-    }
+    ]
 }
