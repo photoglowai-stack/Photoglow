@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import { Alert, AlertDescription } from './ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Alert, AlertDescription } from '../ui/alert';
 import { CheckCircle2, XCircle, AlertCircle, Loader2, PlayCircle } from 'lucide-react';
 import { supabase } from '../utils/supabase/client';
 import { VERCEL_API_BASE, API_ENDPOINTS } from '../utils/config';

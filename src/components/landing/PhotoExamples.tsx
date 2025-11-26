@@ -1,7 +1,7 @@
 import { useState, useEffect, memo } from 'react';
 import { LazyImage } from '../shared/LazyImage';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
+import { Card } from '../ui/card';
+import { Badge } from '../ui/badge';
 import { ArrowRight } from 'lucide-react';
 
 // Static examples data already outside component - good!
@@ -211,7 +211,7 @@ export const PhotoExamples = memo(function PhotoExamples() {
           {/* Image container avec LazyImage */}
           <div className="relative rounded-2xl md:rounded-3xl overflow-hidden border border-pink-500/20 shadow-2xl shadow-purple-500/20">
             <LazyImage
-              src="figma:asset/2638598107c8ea13d0e934e46d83f29bb6da1175.png"
+              src="/src/assets/2638598107c8ea13d0e934e46d83f29bb6da1175.png"
               alt="PhotoGlow AI comparison - Superior photorealism and character consistency"
               className="w-full h-auto"
               blurhash="L24_kVt700Rj00ay-;of00WB-;WB"

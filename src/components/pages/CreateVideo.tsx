@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { Label } from './ui/label';
-import { Card } from './ui/card';
-import { Progress } from './ui/progress';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { Label } from '../ui/label';
+import { Card } from '../ui/card';
+import { Progress } from '../ui/progress';
 import { toast } from 'sonner@2.0.3';
 import { 
   Loader2, 
@@ -14,7 +14,7 @@ import {
   Download,
   Play
 } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useAuth } from '../hooks/useAuth';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 

@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
+import { Card } from '../ui/card';
+import { Badge } from '../ui/badge';
 import { 
   Sparkles, 
   Shield, 

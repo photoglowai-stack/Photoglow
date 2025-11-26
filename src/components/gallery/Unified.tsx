@@ -1,7 +1,7 @@
 import { useState, memo } from 'react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { AspectRatio } from './ui/aspect-ratio';
+import { Card } from '../ui/card';
+import { Button } from '../ui/button';
+import { AspectRatio } from '../ui/aspect-ratio';
 import { Download, Eye, Heart } from 'lucide-react';
 import { LazyImage } from '../shared/LazyImage';
 

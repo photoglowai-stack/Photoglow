@@ -1,4 +1,4 @@
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { X, Sparkles, ArrowRight } from 'lucide-react';
 import { LazyImage } from '../shared/LazyImage';
 import { categoryPhotoPrompts } from './categoryPhotoPrompts';

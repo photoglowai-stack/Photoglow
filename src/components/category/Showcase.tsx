@@ -1,8 +1,8 @@
-import image_ffe26301c2af5df48a3eace6ad54f9fb2585a75c from 'figma:asset/ffe26301c2af5df48a3eace6ad54f9fb2585a75c.png';
+import image_ffe26301c2af5df48a3eace6ad54f9fb2585a75c from '../../assets/ffe26301c2af5df48a3eace6ad54f9fb2585a75c.png';
 import { memo, useCallback } from 'react';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { Card } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ArrowRight } from 'lucide-react';
 
 interface CategoryShowcaseProps {

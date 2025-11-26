@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AlertCircle, X, ExternalLink, CreditCard } from 'lucide-react';
-import { Alert, AlertDescription } from './ui/alert';
-import { Button } from './ui/button';
+import { Alert, AlertDescription } from '../ui/alert';
+import { Button } from '../ui/button';
 
 interface ReplicateStatusBannerProps {
   show?: boolean;

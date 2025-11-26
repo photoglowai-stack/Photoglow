@@ -12,8 +12,8 @@ import {
   CheckCircle2,
   Heart
 } from 'lucide-react';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
 
 export interface CategoryStyle {
   id: string;

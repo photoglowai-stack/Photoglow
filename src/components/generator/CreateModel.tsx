@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Progress } from './ui/progress';
+import { Button } from '../ui/button';
+import { Card } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Progress } from '../ui/progress';
 import { 
   User,
   Upload,
@@ -18,7 +18,7 @@ import {
   RefreshCw,
   Zap
 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { toast } from 'sonner@2.0.3';
 import { useAIModels } from '../hooks/useAIModels';
 

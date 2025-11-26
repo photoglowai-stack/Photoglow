@@ -1,6 +1,6 @@
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { ArrowRight, Star } from 'lucide-react';
-import { Badge } from './ui/badge';
+import { Badge } from '../ui/badge';
 
 interface SimpleCategoryHeroProps {
   title: string;

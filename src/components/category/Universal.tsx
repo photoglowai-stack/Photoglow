@@ -1,10 +1,10 @@
 import { memo } from 'react';
 import { Star, ArrowLeft } from 'lucide-react';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { SocialProof } from './SocialProof';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { SocialProof } from '../landing/SocialProof';
 import { HowItWorks } from './HowItWorks';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { CategoryFAQ } from './CategoryFAQ';
 import { CategoryTestimonials } from './CategoryTestimonials';
 import { categoryPagesConfig, CategoryPageConfig } from './categoryPagesConfig';

@@ -1,5 +1,5 @@
 import { Camera, X } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 interface CategoryPageHeaderProps {
   onBack: () => void;

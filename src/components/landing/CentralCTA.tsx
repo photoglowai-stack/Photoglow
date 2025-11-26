@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { Sparkles, ArrowRight, Zap } from 'lucide-react';
 
 interface CentralCTAProps {

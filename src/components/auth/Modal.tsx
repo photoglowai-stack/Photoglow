@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import { Mail, Lock, Camera, AlertCircle, User, X } from 'lucide-react';
-import { supabase } from '../utils/supabase/client';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { supabase } from "../../utils/supabase/client";
+import { projectId, publicAnonKey } from "../../utils/supabase/info";
 import { toast } from 'sonner@2.0.3';
 
 interface AuthModalProps {
@@ -32,14 +32,14 @@ export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) 
       },
       created_at: new Date().toISOString()
     };
-    
+
     localStorage.setItem('photoglow_demo_user', JSON.stringify(fakeUser));
     localStorage.setItem('photoglow_guest_credits', '100');
-    
+
     console.log('✅ Guest mode activated:', fakeUser);
-    
+
     toast.success('Welcome to PhotoGlow! 🎉 (Guest Mode)');
-    
+
     // Force reload to trigger auth check
     setTimeout(() => {
       onAuthenticated();
@@ -51,7 +51,7 @@ export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) 
   const handleGoogleAuth = async () => {
     setIsLoading(true);
     setError('');
-    
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -61,7 +61,7 @@ export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) 
       });
 
       if (error) throw error;
-      
+
       toast.success('Redirecting to Google...');
     } catch (error: any) {
       console.error('Google auth error:', error);
@@ -75,7 +75,7 @@ export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
-    
+
     setIsLoading(true);
     setError('');
 
@@ -149,10 +149,10 @@ export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) 
       }
     } catch (error: any) {
       console.error('Email auth error:', error);
-      
+
       // Better error messages
       let errorMessage = error.message || 'Authentication failed';
-      
+
       if (error.message?.includes('Invalid login credentials')) {
         errorMessage = "Invalid email or password. Don't have an account? Click 'Sign up' below.";
         toast.error("Invalid credentials. Try signing up if you don't have an account yet.");
@@ -166,7 +166,7 @@ export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) 
       } else {
         toast.error(authMode === 'signup' ? 'Failed to create account' : 'Failed to sign in');
       }
-      
+
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -227,9 +227,9 @@ export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) 
             {authMode === 'reset' ? 'Reset Password' : authMode === 'login' ? 'Welcome Back!' : 'Create Your Account'}
           </h2>
           <p className="text-gray-400 text-center text-xs md:text-sm px-2">
-            {authMode === 'reset' 
+            {authMode === 'reset'
               ? 'Enter your email address and we\'ll send you a link to reset your password'
-              : authMode === 'login' 
+              : authMode === 'login'
                 ? 'Sign in to generate your AI photos and access your gallery'
                 : 'Join thousands of users creating stunning AI photos'}
           </p>

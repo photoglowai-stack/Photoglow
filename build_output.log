@@ -1,0 +1,24 @@
+
+> Dating App Photo Creator (Copy)@0.1.0 build
+> vite build
+
+vite v6.3.5 building for production...
+transforming...
+src/components/ui/sonner.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+✓ 30 modules transformed.
+✗ Build failed in 272ms
+error during build:
+[vite]: Rollup failed to resolve import "figma:asset/fd2d84766f3bd55ec81bb9f9d14061be4b7db6eb.png" from "/Users/lilianarezki/Desktop/PHOTOGLOW 26 NOVEMBRE 2025 FIGMA/src/components/generator/ExploreModels.tsx".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+    at viteLog (file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46345:15)
+    at file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46403:18
+    at onwarn (/Users/lilianarezki/Desktop/PHOTOGLOW 26 NOVEMBRE 2025 FIGMA/node_modules/@vitejs/plugin-react-swc/index.cjs:113:7)
+    at file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46401:7
+    at onRollupLog (file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46393:5)
+    at onLog (file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46043:7)
+    at file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/rollup/dist/es/shared/node-entry.js:20961:32
+    at Object.logger [as onLog] (file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/rollup/dist/es/shared/node-entry.js:22848:9)
+    at ModuleLoader.handleInvalidResolvedId (file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/rollup/dist/es/shared/node-entry.js:21592:26)
+    at file:///Users/lilianarezki/Desktop/PHOTOGLOW%2026%20NOVEMBRE%202025%20FIGMA/node_modules/rollup/dist/es/shared/node-entry.js:21550:26

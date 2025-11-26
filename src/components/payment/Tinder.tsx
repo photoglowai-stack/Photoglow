@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { Switch } from './ui/switch';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { Switch } from '../ui/switch';
 import { 
   Lock, 
   Zap, 

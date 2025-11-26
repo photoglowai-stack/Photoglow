@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { LazyImage } from '../shared/LazyImage';
 import { ArrowLeft, Sparkles } from 'lucide-react';
-import { Button } from './ui/button';
-import headshotsBackgroundImage from 'figma:asset/889909b48ee021025e71d69b390ad6902f141398.png';
-import modelPhotoImage from 'figma:asset/fd2d84766f3bd55ec81bb9f9d14061be4b7db6eb.png';
-import realisticPhotoImage from 'figma:asset/bfa55256432d7539c6b31bba765fd93642044b16.png';
-import selfieGeneratorImage from 'figma:asset/8aed63db7b98c23095a2c7c5d9cbdea71c63cebf.png';
-import portraitGeneratorImage from 'figma:asset/c64c6e3c6e39c9c66e75dde8e3b1ae2feb40a370.png';
-import datingPhotosImage from 'figma:asset/f1baab1b3b8f881d3d83c13cb1c12b8ee0fe7321.png';
-import fitnessPhotosImage from 'figma:asset/cd7a3ba47085bb0a7c2fa0d53a61aab19bcb87b9.png';
+import { Button } from '../ui/button';
+import headshotsBackgroundImage from '../../assets/889909b48ee021025e71d69b390ad6902f141398.png';
+import modelPhotoImage from '../../assets/fd2d84766f3bd55ec81bb9f9d14061be4b7db6eb.png';
+import realisticPhotoImage from '../../assets/bfa55256432d7539c6b31bba765fd93642044b16.png';
+import selfieGeneratorImage from '../../assets/8aed63db7b98c23095a2c7c5d9cbdea71c63cebf.png';
+import portraitGeneratorImage from '../../assets/c64c6e3c6e39c9c66e75dde8e3b1ae2feb40a370.png';
+import datingPhotosImage from '../../assets/f1baab1b3b8f881d3d83c13cb1c12b8ee0fe7321.png';
+import fitnessPhotosImage from '../../assets/cd7a3ba47085bb0a7c2fa0d53a61aab19bcb87b9.png';
 
 interface ExploreAIModelsPageProps {
   onBack: () => void;

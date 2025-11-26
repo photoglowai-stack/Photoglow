@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { LazyImage } from '../shared/LazyImage';
-import { Card } from './ui/card';
-import { AspectRatio } from './ui/aspect-ratio';
+import { Card } from '../ui/card';
+import { AspectRatio } from '../ui/aspect-ratio';
 
 interface VirtualGalleryProps {
   images: string[];

@@ -1,7 +1,7 @@
 import { memo } from 'react';
-import { Badge } from './ui/badge';
-import { Card } from './ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Badge } from '../ui/badge';
+import { Card } from '../ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Star, Quote } from 'lucide-react';
 
 // Static testimonials data moved outside component

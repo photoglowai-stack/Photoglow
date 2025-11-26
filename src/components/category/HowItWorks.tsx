@@ -1,16 +1,16 @@
-import image_78561249bdabb10db45f2e19c3785798769f88cb from 'figma:asset/78561249bdabb10db45f2e19c3785798769f88cb.png';
-import image_06c17fd60b109f44663983174a9fcffb6a7e8ca4 from 'figma:asset/06c17fd60b109f44663983174a9fcffb6a7e8ca4.png';
+import image_78561249bdabb10db45f2e19c3785798769f88cb from '../../assets/78561249bdabb10db45f2e19c3785798769f88cb.png';
+import image_06c17fd60b109f44663983174a9fcffb6a7e8ca4 from '../../assets/06c17fd60b109f44663983174a9fcffb6a7e8ca4.png';
 import { useState, useEffect } from 'react';
 import { motion, useMotionValue, PanInfo } from 'motion/react';
 import { Heart, Upload, Sparkles, Grid3x3, Bookmark, ThumbsUp, MessageCircle } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
-import phoneImage from 'figma:asset/16b71f196debb8a02e63c336078a93f05b9711fe.png';
-import instagramLogo from 'figma:asset/a3d62fe320695b906cb3bc1f68f9228f8d43ed2c.png';
-import linkedinLogo from 'figma:asset/b45cb94262e9dc3e4f49d97475ceb9570d781443.png';
-import pinterestLogo from 'figma:asset/5d083b8c046522abf88456dc17431671c7a94f0d.png';
-import instagramPhoto from 'figma:asset/7908cc95b51e4da62111a52533d59e9ff10cea21.png';
-import linkedinPhoto from 'figma:asset/889909b48ee021025e71d69b390ad6902f141398.png';
-import aiProcessingPhoto from 'figma:asset/9fbd94f84c686f8a660346c0a5b33d5f11f2713f.png';
+import { ImageWithFallback } from '../figma/ImageWithFallback';
+import phoneImage from '../../assets/16b71f196debb8a02e63c336078a93f05b9711fe.png';
+import instagramLogo from '../../assets/a3d62fe320695b906cb3bc1f68f9228f8d43ed2c.png';
+import linkedinLogo from '../../assets/b45cb94262e9dc3e4f49d97475ceb9570d781443.png';
+import pinterestLogo from '../../assets/5d083b8c046522abf88456dc17431671c7a94f0d.png';
+import instagramPhoto from '../../assets/7908cc95b51e4da62111a52533d59e9ff10cea21.png';
+import linkedinPhoto from '../../assets/889909b48ee021025e71d69b390ad6902f141398.png';
+import aiProcessingPhoto from '../../assets/9fbd94f84c686f8a660346c0a5b33d5f11f2713f.png';
 
 interface ColorScheme {
   primary: string;
