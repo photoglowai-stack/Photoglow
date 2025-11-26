@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal } from 'lucide-react';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 
 interface InstagramPreviewProps {
   previewImage?: string;

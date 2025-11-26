@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 
 interface AIStyle {
   id: string;

@@ -3,7 +3,7 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { AspectRatio } from './ui/aspect-ratio';
 import { Download, Eye, Heart } from 'lucide-react';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 
 interface UnifiedGalleryProps {
   images: string[];

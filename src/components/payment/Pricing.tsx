@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 import { 
   Star, 
   Sparkles, 

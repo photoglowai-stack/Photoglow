@@ -1,4 +1,4 @@
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 import { ArrowRight, Camera, Heart, Palette, Shirt, Zap, Briefcase } from 'lucide-react';
 
 interface SuggestedCategoriesProps {

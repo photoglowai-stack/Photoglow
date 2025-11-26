@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { Badge } from './ui/badge';
 import { ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 import selfie1 from 'figma:asset/0add018c10f3889f2c712223ec4a093b5ddf753a.png';
 import selfie2 from 'figma:asset/2c508c4e08485a8f3e97314d1e81a5ddf454e5a1.png';
 import selfie3 from 'figma:asset/0690a5805cd67144f4f9f4968e8da6dc518fa63d.png';

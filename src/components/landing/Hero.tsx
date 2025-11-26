@@ -2,7 +2,7 @@ import { useState, memo } from 'react';
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Star, Sparkles, Camera, ShoppingBag } from 'lucide-react';
-import { ScrollingMosaic } from './ScrollingMosaic';
+import { ScrollingMosaic } from '../shared/ScrollingMosaic';
 
 interface HeroSectionProps {
   onStartForm: (gender: 'male' | 'female') => void;

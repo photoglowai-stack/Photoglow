@@ -1,5 +1,5 @@
-import { LazyImage } from './LazyImage';
-import { SEOHead } from './SEOHead';
+import { LazyImage } from '../shared/LazyImage';
+import { SEOHead } from '../shared/SEOHead';
 import { Camera, Sparkles } from 'lucide-react';
 import { Button } from './ui/button';
 import { CategoryPageHeader } from './CategoryPageHeader';

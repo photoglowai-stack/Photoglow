@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { ArrowRight } from 'lucide-react';

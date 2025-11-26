@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import { Button } from './ui/button';
 import headshotsBackgroundImage from 'figma:asset/889909b48ee021025e71d69b390ad6902f141398.png';

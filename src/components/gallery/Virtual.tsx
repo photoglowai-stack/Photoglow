@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, memo } from 'react';
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 import { Card } from './ui/card';
 import { AspectRatio } from './ui/aspect-ratio';
 

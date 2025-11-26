@@ -1,4 +1,4 @@
-import { LazyImage } from './LazyImage';
+import { LazyImage } from '../shared/LazyImage';
 import { 
   Star, 
   Sparkles, 
