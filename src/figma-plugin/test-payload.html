@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Payload - PhotoGlow Plugin</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #e94e87;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    pre {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .success { color: #4ade80; }
+    .error { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <h1>Test Payload - PhotoGlow Plugin</h1>
+  
+  <button onclick="testPayload()">🧪 Test API Call</button>
+  
+  <h2>Payload:</h2>
+  <pre id="payload"></pre>
+  
+  <h2>Result:</h2>
+  <pre id="result"></pre>
+  
+  <img id="preview" style="max-width: 100%; margin-top: 20px; display: none;">
+  
+  <script type="module">
+    const API = "https://image-generator-api-chi.vercel.app/api/v1-preview";
+    
+    function buildTestPayload() {
+      return {
+        proxy: true,
+        fast: true,
+        ratio: "1:1",
+        px: 384,
+        safe: false,
+        
+        gender: "woman",
+        background: "studio",
+        outfit: "athleisure",
+        skin_tone: "tan",
+        hair_length: "long",
+        hair_color: "brown",
+        eye_color: "hazel",
+        body_type: "athletic",
+        bust_size: "medium",
+        butt_size: "medium",
+        mood: "confident",
+        framing: "hs",
+        neckline: "vneck",
+        seed: 123456789
+      };
+    }
+    
+    window.testPayload = async function() {
+      const payload = buildTestPayload();
+      
+      document.getElementById('payload').textContent = JSON.stringify(payload, null, 2);
+      document.getElementById('result').textContent = "Sending request...";
+      
+      try {
+        console.log("[TEST] Sending payload:", payload);
+        
+        const res = await fetch(API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        console.log("[TEST] Response status:", res.status);
+        console.log("[TEST] Response headers:", [...res.headers.entries()]);
+        
+        const ct = res.headers.get("content-type") || "";
+        
+        if (ct.startsWith("image/")) {
+          document.getElementById('result').innerHTML = 
+            '<span class="success">✅ SUCCESS - Image received!</span>';
+          
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          
+          const img = document.getElementById('preview');
+          img.src = url;
+          img.style.display = 'block';
+          
+          console.log("[TEST] Success! Image size:", blob.size, "bytes");
+        } else {
+          const text = await res.text();
+          document.getElementById('result').innerHTML = 
+            `<span class="error">❌ ERROR - ${res.status}</span>\n\nContent-Type: ${ct}\n\nResponse:\n${text}`;
+          
+          console.error("[TEST] Failed:", {
+            status: res.status,
+            contentType: ct,
+            body: text
+          });
+        }
+        
+      } catch (error) {
+        document.getElementById('result').innerHTML = 
+          `<span class="error">❌ EXCEPTION</span>\n\n${error.message}\n\n${error.stack}`;
+        
+        console.error("[TEST] Exception:", error);
+      }
+    };
+  </script>
+</body>
+</html>

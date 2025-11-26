@@ -1,0 +1,63 @@
+{
+    "framework": "vite",
+    "buildCommand": "npm run build",
+    "outputDirectory": "build",
+    "installCommand": "npm install",
+    "functions": {
+        "api/**/*.mjs": {
+            "memory": 1024,
+            "maxDuration": 60
+        },
+        "api/**/*.js": {
+            "memory": 1024,
+            "maxDuration": 60
+        }
+    },
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/$1"
+        },
+        {
+            "src": "/v1/jobs",
+            "dest": "/api/v1-jobs.mjs"
+        },
+        {
+            "src": "/v1/preview",
+            "dest": "/api/v1-preview.mjs"
+        },
+        {
+            "src": "/v1/ideas/(.*)",
+            "dest": "/api/v1/ideas/$1"
+        },
+        {
+            "handle": "filesystem"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/index.html"
+        }
+    ],
+    "headers": [
+        {
+            "source": "/api/(.*)",
+            "headers": [
+                {
+                    "key": "Access-Control-Allow-Origin",
+                    "value": "*"
+                },
+                {
+                    "key": "Access-Control-Allow-Methods",
+                    "value": "GET, POST, PUT, DELETE, OPTIONS"
+                },
+                {
+                    "key": "Access-Control-Allow-Headers",
+                    "value": "Content-Type, Authorization"
+                }
+            ]
+        }
+    ],
+    "env": {
+        "NODE_ENV": "production"
+    }
+}

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PhotoGlow Preview</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    
+    .container {
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Preview Image */
+    .preview-container {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #2a2a2a;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #3a3a3a;
+    }
+    
+    .preview-container.loading {
+      border-color: #8b5cf6;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    #preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    
+    #preview.visible {
+      display: block;
+    }
+    
+    .preview-placeholder {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
+    
+    /* Form */
+    .form-group {
+      margin-bottom: 12px;
+    }
+    
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #ccc;
+    }
+    
+    select, input {
+      width: 100%;
+      padding: 8px 12px;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: #8b5cf6;
+    }
+    
+    /* Buttons */
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .button-group.full {
+      grid-template-columns: 1fr;
+    }
+    
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #3a3a3a;
+    }
+    
+    .btn-secondary:hover:not(:disabled) {
+      background: #3a3a3a;
+      border-color: #4a4a4a;
+    }
+    
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+    
+    .btn-success:hover:not(:disabled) {
+      background: #059669;
+    }
+    
+    /* Status */
+    .status {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    
+    .status.info {
+      background: #1e3a8a;
+      color: #93c5fd;
+    }
+    
+    .status.error {
+      background: #7f1d1d;
+      color: #fca5a5;
+    }
+    
+    .status.success {
+      background: #064e3b;
+      color: #6ee7b7;
+    }
+    
+    /* Seed display */
+    .seed-info {
+      font-size: 11px;
+      color: #888;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    
+    /* Grid layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✨ PhotoGlow Preview</h1>
+    
+    <!-- Preview Image -->
+    <div class="preview-container" id="previewContainer">
+      <img id="preview" alt="Preview" />
+      <div class="preview-placeholder" id="placeholder">
+        Select attributes and click Speed to generate
+      </div>
+    </div>
+    
+    <!-- Seed Info -->
+    <div class="seed-info" id="seedInfo">No preview yet</div>
+    
+    <!-- Status Messages -->
+    <div id="status" style="display: none;"></div>
+    
+    <!-- Action Buttons -->
+    <div class="button-group">
+      <button id="btn-speed" class="btn-primary">⚡ Speed</button>
+      <button id="btn-shuffle" class="btn-secondary">🎲 Shuffle</button>
+    </div>
+    
+    <div class="button-group">
+      <button id="btn-enhance" class="btn-secondary">✨ +Net</button>
+      <button id="btn-apply" class="btn-success">Apply to Selection</button>
+    </div>
+    
+    <!-- Form -->
+    <form id="form">
+      <!-- Core Attributes -->
+      <div class="form-group">
+        <label>Gender</label>
+        <select name="gender">
+          <option value="woman">Woman</option>
+          <option value="man">Man</option>
+        </select>
+      </div>
+      
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Age</label>
+          <select name="age">
+            <option value="25">25</option>
+            <option value="30">30</option>
+            <option value="35">35</option>
+            <option value="40">40</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Skin Tone</label>
+          <select name="skin_tone">
+            <option value="light">Light</option>
+            <option value="fair">Fair</option>
+            <option value="medium" selected>Medium</option>
+            <option value="tan">Tan</option>
+            <option value="deep">Deep</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Hair -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Hair Length</label>
+          <select name="hair_length">
+            <option value="bald">Bald</option>
+            <option value="short" selected>Short</option>
+            <option value="medium">Medium</option>
+            <option value="long">Long</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Hair Color</label>
+          <select name="hair_color">
+            <option value="none">None</option>
+            <option value="blonde">Blonde</option>
+            <option value="brown" selected>Brown</option>
+            <option value="black">Black</option>
+            <option value="red">Red</option>
+            <option value="gray">Gray</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Eyes & Body -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Eye Color</label>
+          <select name="eye_color">
+            <option value="brown" selected>Brown</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="hazel">Hazel</option>
+            <option value="gray">Gray</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Body Type</label>
+          <select name="body_type">
+            <option value="slim">Slim</option>
+            <option value="average" selected>Average</option>
+            <option value="athletic">Athletic</option>
+            <option value="curvy">Curvy</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Body Attributes -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Bust Size (Women)</label>
+          <select name="bust_size">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Butt Size</label>
+          <select name="butt_size">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Mood -->
+      <div class="form-group">
+        <label>Mood</label>
+        <select name="mood">
+          <option value="neutral">Neutral</option>
+          <option value="friendly">Friendly</option>
+          <option value="confident" selected>Confident</option>
+          <option value="cool">Cool</option>
+          <option value="serious">Serious</option>
+          <option value="approachable">Approachable</option>
+        </select>
+      </div>
+      
+      <!-- Framing & Neckline -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Framing</label>
+          <select name="framing" id="framing">
+            <option value="hs" selected>Head & Shoulders</option>
+            <option value="cu">Chest-Up</option>
+            <option value="wu">Waist-Up</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Neckline (Women)</label>
+          <select name="neckline">
+            <option value="">Default</option>
+            <option value="crew">Crew</option>
+            <option value="vneck">V-Neck</option>
+            <option value="scoop">Scoop</option>
+            <option value="plunge">Plunge</option>
+            <option value="strapless">Strapless</option>
+            <option value="sleeveless">Sleeveless</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Background & Outfit -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Background</label>
+          <select name="background">
+            <option value="studio" selected>Studio</option>
+            <option value="office">Office</option>
+            <option value="city">City</option>
+            <option value="nature">Nature</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Outfit</label>
+          <select name="outfit">
+            <option value="blazer">Blazer</option>
+            <option value="shirt">Shirt</option>
+            <option value="tee" selected>T-Shirt</option>
+            <option value="athleisure">Athleisure</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Resolution (auto-calculated) -->
+      <div class="form-group">
+        <label>Resolution (auto)</label>
+        <input type="number" name="px" id="px" value="384" readonly style="background: #1a1a1a;" />
+      </div>
+    </form>
+  </div>
+  
+  <script type="module">
+    import { previewFigma, getCurrentBlobURL, cleanup } from './api.js';
+    import { autoFromFraming } from './utils.js';
+    
+    // DOM elements
+    const $img = document.getElementById('preview');
+    const $placeholder = document.getElementById('placeholder');
+    const $previewContainer = document.getElementById('previewContainer');
+    const $form = document.getElementById('form');
+    const $status = document.getElementById('status');
+    const $seedInfo = document.getElementById('seedInfo');
+    const $pxInput = document.getElementById('px');
+    const $framingSelect = document.getElementById('framing');
+    
+    const $btnSpeed = document.getElementById('btn-speed');
+    const $btnShuffle = document.getElementById('btn-shuffle');
+    const $btnEnhance = document.getElementById('btn-enhance');
+    const $btnApply = document.getElementById('btn-apply');
+    
+    // State
+    let currentSeed = null;
+    let currentMeta = null;
+    let isGenerating = false;
+    
+    // Read form values
+    function readUI() {
+      const f = new FormData($form);
+      const v = Object.fromEntries(f.entries());
+      v.px = Number(v.px || 384);
+      return v;
+    }
+    
+    // Update resolution based on framing
+    function updateResolution() {
+      const framing = $framingSelect.value;
+      const { px } = autoFromFraming(framing);
+      $pxInput.value = px;
+    }
+    
+    // Show status message
+    function showStatus(message, type = 'info') {
+      $status.textContent = message;
+      $status.className = `status ${type}`;
+      $status.style.display = 'block';
+      
+      if (type === 'success' || type === 'info') {
+        setTimeout(() => {
+          $status.style.display = 'none';
+        }, 3000);
+      }
+    }
+    
+    // Hide status
+    function hideStatus() {
+      $status.style.display = 'none';
+    }
+    
+    // Enable/disable buttons
+    function setButtonsEnabled(enabled) {
+      $btnSpeed.disabled = !enabled;
+      $btnShuffle.disabled = !enabled;
+      $btnEnhance.disabled = !enabled;
+      $btnApply.disabled = !enabled || !currentSeed;
+    }
+    
+    // Debounce helper
+    let debounceTimer = null;
+    function debounce(fn, delay = 250) {
+      return function(...args) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+    
+    // Main generation function
+    async function run(mode = 'speed') {
+      if (isGenerating) return;
+      
+      isGenerating = true;
+      setButtonsEnabled(false);
+      // Ne PAS afficher le loading container ici - on attend d'avoir l'image
+      showStatus(`Generating ${mode === 'shuffle' ? 'new face' : 'preview'}...`, 'info');
+      
+      try {
+        const form = readUI();
+        const { ratio, px } = autoFromFraming(form.framing);
+        form.ratio = ratio;
+        form.px = px;
+        
+        const { url, seed, mode: responseMode } = await previewFigma(form, { mode });
+        
+        // On a l'image → charger et afficher quand ready
+        if (url) {
+          // Attendre que l'image soit chargée avant de l'afficher
+          await new Promise((resolve, reject) => {
+            $img.onload = resolve;
+            $img.onerror = reject;
+            $img.src = url;
+          });
+          
+          // Image chargée → afficher
+          $img.classList.add('visible');
+          $placeholder.style.display = 'none';
+          
+          // Update state
+          currentSeed = seed;
+          currentMeta = { seed, px: form.px, framing: form.framing };
+          
+          // Update seed info
+          const info = responseMode === 'url' ? 'External URL' : `${form.px}px | ${form.framing.toUpperCase()}`;
+          $seedInfo.textContent = `Seed: ${seed} | ${info}`;
+          
+          showStatus('Preview ready!', 'success');
+          
+          // Notify main thread
+          parent.postMessage({
+            pluginMessage: {
+              type: 'preview:ready',
+              seed,
+              url,
+              meta: currentMeta
+            }
+          }, '*');
+        }
+        
+      } catch (error) {
+        console.error('[generate] Error:', error);
+        showStatus(error.message || 'Generation failed', 'error');
+        
+        // Hide preview on error (ne pas afficher le container vide)
+        $img.classList.remove('visible');
+        $placeholder.style.display = 'block';
+        $placeholder.textContent = 'Generation failed. Try again.';
+        
+      } finally {
+        isGenerating = false;
+        setButtonsEnabled(true);
+        $previewContainer.classList.remove('loading');
+      }
+    }
+    
+    // Apply to selection
+    async function applyToSelection() {
+      const url = getCurrentBlobURL();
+      if (!url) {
+        showStatus('No preview to apply', 'error');
+        return;
+      }
+      
+      try {
+        showStatus('Fetching image...', 'info');
+        
+        // Fetch blob and convert to array buffer
+        const res = await fetch(url);
+        const blob = await res.blob();
+        const buf = await blob.arrayBuffer();
+        const bytes = Array.from(new Uint8Array(buf));
+        
+        // Send to main thread
+        parent.postMessage({
+          pluginMessage: {
+            type: 'apply-selection',
+            bytes,
+            name: `preview_${currentSeed}.jpg`,
+            meta: currentMeta
+          }
+        }, '*');
+        
+        showStatus('Applying to selection...', 'info');
+        
+      } catch (error) {
+        console.error('[applyToSelection] Error:', error);
+        showStatus('Failed to apply image', 'error');
+      }
+    }
+    
+    // Event listeners with debounce
+    $btnSpeed.onclick = debounce(() => run('speed'), 200);
+    $btnShuffle.onclick = debounce(() => run('shuffle'), 200);
+    $btnEnhance.onclick = async () => {
+      // Increase resolution while keeping same seed (speed mode)
+      const form = readUI();
+      const { px: currentPx } = autoFromFraming(form.framing);
+      
+      // Upgrade resolution: 384→448→512
+      if (currentPx === 384) {
+        $pxInput.value = 448;
+        form.framing = 'cu';
+        $framingSelect.value = 'cu';
+      } else if (currentPx === 448) {
+        $pxInput.value = 512;
+        form.framing = 'wu';
+        $framingSelect.value = 'wu';
+      } else {
+        showStatus('Already at max resolution', 'info');
+        return;
+      }
+      
+      await run('speed');
+    };
+    $btnApply.onclick = applyToSelection;
+    
+    // Auto-update resolution when framing changes
+    $framingSelect.onchange = updateResolution;
+    
+    // Handle messages from main thread
+    window.onmessage = async (event) => {
+      const msg = event.data.pluginMessage;
+      if (!msg) return;
+      
+      if (msg.type === 'selection-changed') {
+        // Could update UI based on selection
+      }
+    };
+    
+    // Initialize
+    updateResolution();
+    setButtonsEnabled(true);
+    
+    // Cleanup on window close
+    window.onbeforeunload = () => {
+      cleanup();
+    };
+  </script>
+</body>
+</html>
