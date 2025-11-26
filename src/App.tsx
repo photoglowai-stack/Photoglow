@@ -1,49 +1,49 @@
 import { useState, useEffect, lazy, Suspense } from "react";
-import { Header } from "./components/Header";
-import { HeroSection } from "./components/HeroSection";
-import { FeaturedIn } from "./components/FeaturedIn";
-import { Features } from "./components/Features";
-import { StickyEmailBar } from "./components/StickyEmailBar";
-import { Footer } from "./components/Footer";
-import { SEOHead } from "./components/SEOHead";
-import { ComparisonSection } from "./components/ComparisonSection";
-import { SocialProof } from "./components/SocialProof";
-import { FAQ } from "./components/FAQ";
-import { CategoryShowcase } from "./components/CategoryShowcase";
-import { BeforeAfterTransformation } from "./components/BeforeAfterTransformation";
-import { AuthModal } from "./components/AuthModal";
+import { Header } from "./components/shared/Header";
+import { HeroSection } from "./components/landing/Hero";
+import { FeaturedIn } from "./components/landing/FeaturedIn";
+import { Features } from "./components/landing/Features";
+import { StickyEmailBar } from "./components/landing/StickyEmailBar";
+import { Footer } from "./components/shared/Footer";
+import { SEOHead } from "./components/shared/SEOHead";
+import { ComparisonSection } from "./components/landing/Comparison";
+import { SocialProof } from "./components/landing/SocialProof";
+import { FAQ } from "./components/landing/FAQ";
+import { CategoryShowcase } from "./components/category/Showcase";
+import { BeforeAfterTransformation } from "./components/landing/BeforeAfter";
+import { AuthModal } from "./components/auth/Modal";
 import { supabase } from "./utils/supabase/client";
 import { Toaster } from "./components/ui/sonner";
 
 // Lazy load heavy components to prevent timeout
-const CategoryHowItWorks = lazy(() => import("./components/CategoryHowItWorks").then(m => ({ default: m.CategoryHowItWorks })));
+const CategoryHowItWorks = lazy(() => import("./components/category/HowItWorks").then(m => ({ default: m.CategoryHowItWorks })));
 
 // Lazy load only page components (not landing page sections)
-const TinderPaymentPage = lazy(() => import("./components/TinderPaymentPage").then(m => ({ default: m.TinderPaymentPage })));
-const AIPhotoGenerator = lazy(() => import("./components/AIPhotoGeneratorV2").then(m => ({ default: m.AIPhotoGenerator })));
-const ProfilePage = lazy(() => import("./components/ProfilePage").then(m => ({ default: m.ProfilePage })));
-const AdminV2Unified = lazy(() => import("./components/AdminV2Unified").then(m => ({ default: m.AdminV2Unified })));
-const SystemHealthPanel = lazy(() => import("./components/SystemHealthPanel").then(m => ({ default: m.default })));
+const TinderPaymentPage = lazy(() => import("./components/payment/Tinder").then(m => ({ default: m.TinderPaymentPage })));
+const AIPhotoGenerator = lazy(() => import("./components/generator/AIPhotoGenerator").then(m => ({ default: m.AIPhotoGenerator })));
+const ProfilePage = lazy(() => import("./components/pages/ProfilePage").then(m => ({ default: m.ProfilePage })));
+const AdminV2Unified = lazy(() => import("./components/admin/AdminUnified").then(m => ({ default: m.AdminV2Unified })));
+const SystemHealthPanel = lazy(() => import("./components/admin/SystemHealthPanel").then(m => ({ default: m.default })));
 
 // Keep these lazy-loaded for better initial page load
-const PhotoGlowPage = lazy(() => import("./components/PhotoGlowPage").then(m => ({ default: m.PhotoGlowPage })));
-const PhotoGlowPricing = lazy(() => import("./components/PhotoGlowPricing").then(m => ({ default: m.PhotoGlowPricing })));
-const PhotoDetailPage = lazy(() => import("./components/PhotoDetailPage").then(m => ({ default: m.PhotoDetailPage })));
-const CategoryPage = lazy(() => import("./components/CategoryPage").then(m => ({ default: m.CategoryPage })));
-const UniversalCategoryPage = lazy(() => import("./components/UniversalCategoryPage").then(m => ({ default: m.UniversalCategoryPage })));
-const CategoryUniversalPage = lazy(() => import("./components/CategoryUniversalPage").then(m => ({ default: m.CategoryUniversalPage })));
-const IdeasPage = lazy(() => import("./components/IdeasPage").then(m => ({ default: m.IdeasPage })));
-const ExploreAIModelsPage = lazy(() => import("./components/ExploreAIModelsPage").then(m => ({ default: m.ExploreAIModelsPage })));
-const CreateVideoPage = lazy(() => import("./components/CreateVideoPage").then(m => ({ default: m.CreateVideoPage })));
-const VideosGalleryPage = lazy(() => import("./components/VideosGalleryPage").then(m => ({ default: m.VideosGalleryPage })));
-const AdminGenerateCategoriesPage = lazy(() => import("./components/AdminGenerateCategoriesClean").then(m => ({ default: m.AdminGenerateCategoriesClean })));
+const PhotoGlowPage = lazy(() => import("./components/pages/PhotoGlowPage").then(m => ({ default: m.PhotoGlowPage })));
+const PhotoGlowPricing = lazy(() => import("./components/payment/Pricing").then(m => ({ default: m.PhotoGlowPricing })));
+const PhotoDetailPage = lazy(() => import("./components/gallery/PhotoDetail").then(m => ({ default: m.PhotoDetailPage })));
+const CategoryPage = lazy(() => import("./components/category/CategoryPage").then(m => ({ default: m.CategoryPage })));
+const UniversalCategoryPage = lazy(() => import("./components/category/UniversalAlt").then(m => ({ default: m.UniversalCategoryPage })));
+const CategoryUniversalPage = lazy(() => import("./components/category/Universal").then(m => ({ default: m.CategoryUniversalPage })));
+const IdeasPage = lazy(() => import("./components/pages/IdeasPage").then(m => ({ default: m.IdeasPage })));
+const ExploreAIModelsPage = lazy(() => import("./components/generator/ExploreModels").then(m => ({ default: m.ExploreAIModelsPage })));
+const CreateVideoPage = lazy(() => import("./components/pages/CreateVideo").then(m => ({ default: m.CreateVideoPage })));
+const VideosGalleryPage = lazy(() => import("./components/gallery/Videos").then(m => ({ default: m.VideosGalleryPage })));
+const AdminGenerateCategoriesPage = lazy(() => import("./components/admin/AdminUnified").then(m => ({ default: m.AdminV2Unified })));
 
 import { categoryDataMap } from "./components/categoryData";
 import { categoryPagesConfig } from "./components/categoryPagesConfig";
 import { categoryExamplesData } from "./components/categoryExamplesData";
 
 // Loading fallback component - improved skeleton
-import { LoadingSkeleton } from "./components/LoadingSkeleton";
+import { LoadingSkeleton } from "./components/shared/LoadingSkeleton";
 
 type AppState =
   | "landing"
@@ -99,13 +99,13 @@ export default function App() {
     useState<string>("");
   const [selectedPhotoCategoryId, setSelectedPhotoCategoryId] =
     useState<string | undefined>(undefined);
-  
+
   // Universal category page state
   const [universalCategoryId, setUniversalCategoryId] = useState<string>('');
-  
+
   // NEW: Video page state
   const [selectedImageForVideo, setSelectedImageForVideo] = useState<string>('');
-  
+
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
@@ -123,7 +123,7 @@ export default function App() {
           setCurrentState('category-universal');
           return;
         }
-        
+
         // Map common hashes to states
         const hashToState: Record<string, AppState> = {
           'admin': 'admin',
@@ -135,7 +135,7 @@ export default function App() {
           'profile': 'profile',
           'system-health': 'system-health',
         };
-        
+
         const targetState = hashToState[hash];
         if (targetState) {
           console.log(`🔗 Hash navigation detected: #${hash} → ${targetState}`);
@@ -149,7 +149,7 @@ export default function App() {
 
     // Listen for hash changes (when clicking links or programmatically changing hash)
     window.addEventListener('hashchange', handleHashChange);
-    
+
     return () => {
       window.removeEventListener('hashchange', handleHashChange);
     };
@@ -230,7 +230,7 @@ export default function App() {
   const handlePhotoGlowPurposeSelect = (purpose: string) => {
     setSelectedPurpose(purpose);
     setSelectedCategory(purpose);
-    
+
     // Map PhotoGlow purposes to category pages
     const purposeToPageMap: Record<string, AppState> = {
       'professional': 'ai-headshots',
@@ -366,7 +366,7 @@ export default function App() {
   // NEW: Handler for CategoryShowcase clicks -> Universal Category Page
   const handleCategoryShowcaseClick = (categoryId: string) => {
     console.log('📱 Category clicked from showcase:', categoryId);
-    
+
     // Map CategoryShowcase IDs to categoryPagesConfig IDs
     const categoryIdMap: Record<string, string> = {
       'professional': 'ai-headshots',
@@ -403,7 +403,7 @@ export default function App() {
       'ai-portrait': 'ai-portrait-examples',
       'ai-realistic-photo': 'ai-realistic-photo-examples',
     };
-    
+
     const examplesPage = examplesPageMap[currentPage];
     if (examplesPage) {
       setCurrentState(examplesPage);
@@ -929,14 +929,14 @@ export default function App() {
 
   return (
     <>
-      <SEOHead 
+      <SEOHead
         title="The Most Popular AI Photo Generator | PhotoGlow"
         description="Transform your photos with PhotoGlow - the leading AI photo generator. Create professional headshots, dating photos, fashion photography, and more with advanced AI technology."
         keywords="ai photo generator, ai photos, photoglow, ai headshots, ai dating photos, ai fashion photography, photo generator"
       />
       <div className="min-h-screen bg-black text-white page-container">
         <Header
-          onShowPricing={handleShowPricing} 
+          onShowPricing={handleShowPricing}
           onShowPhotoGlow={handleShowPhotoGlow}
           onShowIdeas={handleShowIdeas}
           onShowAuth={() => setShowAuthModal(true)}
@@ -946,11 +946,11 @@ export default function App() {
           currentPage={currentState}
           isLandingPage={true}
         />
-        
+
         {/* Main content flow - zero gaps between sections */}
         <main className="relative">
-          <HeroSection 
-            onStartForm={handleGetStarted} 
+          <HeroSection
+            onStartForm={handleGetStarted}
             onExploreModels={handleExploreModels}
             onPhotoClick={handlePhotoClick}
           />
@@ -965,9 +965,9 @@ export default function App() {
           <FAQ />
           <CategoryShowcase onCategoryClick={handleCategoryShowcaseClick} />
         </main>
-        
+
         <Footer />
-        <StickyEmailBar 
+        <StickyEmailBar
           onEmailSubmit={(email) => {
             setUserEmail(email);
             handleShowPricing();
@@ -975,7 +975,7 @@ export default function App() {
           onStartNow={handleShowPricing}
         />
       </div>
-      
+
       {/* Authentication Modal - Always rendered */}
       <AuthModal
         isOpen={showAuthModal}
