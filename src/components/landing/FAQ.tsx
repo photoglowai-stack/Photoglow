@@ -4,7 +4,7 @@ import {
   SimpleAccordionContent as AccordionContent,
   SimpleAccordionItem as AccordionItem,
   SimpleAccordionTrigger as AccordionTrigger,
-} from "./ui/simple-accordion";
+} from "../ui/simple-accordion";
 import { 
   HelpCircle, 
   Shield, 

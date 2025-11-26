@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Sparkles, Clock } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 interface StickyEmailBarProps {
   onEmailSubmit?: (email: string) => void;
@@ -35,7 +35,7 @@ export function StickyEmailBar({ onEmailSubmit, onStartNow }: StickyEmailBarProp
     const interval = setInterval(() => {
       setTimeLeft(prev => {
         let { hours, minutes, seconds } = prev;
-        
+
         if (seconds > 0) {
           seconds--;
         } else if (minutes > 0) {
@@ -51,7 +51,7 @@ export function StickyEmailBar({ onEmailSubmit, onStartNow }: StickyEmailBarProp
           minutes = 59;
           seconds = 59;
         }
-        
+
         return { hours, minutes, seconds };
       });
     }, 1000);
@@ -89,7 +89,7 @@ export function StickyEmailBar({ onEmailSubmit, onStartNow }: StickyEmailBarProp
         >
           {/* Backdrop blur */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/90 to-transparent backdrop-blur-xl pointer-events-none" />
-          
+
           {/* Main bar */}
           <div className="relative border-t border-purple-500/30 shadow-2xl shadow-purple-500/20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -134,7 +134,7 @@ export function StickyEmailBar({ onEmailSubmit, onStartNow }: StickyEmailBarProp
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Timer */}
                   <div className="flex items-center gap-2 pl-4 border-l border-purple-500/30">
                     <div className="text-center">
@@ -182,7 +182,7 @@ export function StickyEmailBar({ onEmailSubmit, onStartNow }: StickyEmailBarProp
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Compact Timer */}
                   <div className="flex items-center gap-1 px-2 py-1 bg-black/40 rounded-md">
                     <Clock className="w-3.5 h-3.5 text-purple-400" />
