@@ -25,6 +25,26 @@
         {
             "source": "/v1/ideas/:path*",
             "destination": "/api/v1/ideas/:path*"
+        },
+        {
+            "source": "/api/system",
+            "destination": "/api/core.mjs"
+        },
+        {
+            "source": "/api/presets",
+            "destination": "/api/core.mjs"
+        },
+        {
+            "source": "/api/credits",
+            "destination": "/api/core.mjs"
+        },
+        {
+            "source": "/api/credits/debit",
+            "destination": "/api/core.mjs"
+        },
+        {
+            "source": "/api/models",
+            "destination": "/api/core.mjs"
         }
     ],
     "headers": [
