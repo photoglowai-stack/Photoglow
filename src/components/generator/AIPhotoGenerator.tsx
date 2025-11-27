@@ -11,7 +11,8 @@ interface AIPhotoGeneratorProps {
 }
 
 const placeholderEnabled =
-  typeof import.meta !== 'undefined' && import.meta.env?.VITE_PLACEHOLDER_MODE === 'true';
+  typeof import.meta !== 'undefined' &&
+  String(import.meta.env?.VITE_PLACEHOLDER_MODE).toLowerCase() === 'true';
 
 function PlaceholderView({ onBack, selectedPackage }: Pick<AIPhotoGeneratorProps, 'onBack' | 'selectedPackage'>) {
   return (

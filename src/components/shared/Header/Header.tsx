@@ -15,12 +15,16 @@ export interface HeaderProps {
   onShowPhotoGlow?: () => void;
   /** Callback pour afficher la page d'idées */
   onShowIdeas?: () => void;
+  /** Callback pour afficher les exemples/galleries */
+  onShowExamples?: () => void;
   /** Callback pour afficher la modale de connexion */
   onShowAuth?: () => void;
   /** Callback pour accéder à l'interface admin */
   onShowAdmin?: () => void;
   /** Callback pour accéder au profil utilisateur */
   onShowProfile?: () => void;
+  /** Callback pour accéder aux catégories populaires */
+  onShowCategories?: () => void;
   /** Callback pour retourner à la landing page */
   onShowLanding?: () => void;
   /** Indique si on est sur la landing page */
@@ -53,9 +57,11 @@ export function Header({
   onShowPricing,
   onShowPhotoGlow,
   onShowIdeas,
+  onShowExamples,
   onShowAuth,
   onShowAdmin,
   onShowProfile,
+  onShowCategories,
   onShowLanding,
   isLandingPage = false,
   currentPage,
@@ -63,7 +69,9 @@ export function Header({
   className = ''
 }: HeaderProps) {
   const navItems = [
-    { label: 'Generator', onClick: onShowPhotoGlow, key: 'photoglow' },
+    { label: 'Generator', onClick: onShowPhotoGlow, key: 'ai-photo-generator' },
+    { label: 'Categories', onClick: onShowCategories, key: 'ai-headshots' },
+    { label: 'Examples', onClick: onShowExamples, key: 'ai-headshots-examples' },
     { label: 'Ideas', onClick: onShowIdeas, key: 'ideas' },
     { label: 'Profile', onClick: onShowProfile, key: 'profile' }
   ].filter(item => Boolean(item.onClick));

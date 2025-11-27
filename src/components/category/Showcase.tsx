@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 
 interface CategoryShowcaseProps {
   onCategoryClick?: (categoryId: string) => void;
+  onViewExamples?: (categoryId: string) => void;
 }
 
 // Static data moved outside component to prevent re-creation
@@ -238,12 +239,18 @@ const categories = [
   ];
 
 // Memoized component - Animations CSS natives
-export const CategoryShowcase = memo(function CategoryShowcase({ onCategoryClick }: CategoryShowcaseProps) {
+export const CategoryShowcase = memo(function CategoryShowcase({ onCategoryClick, onViewExamples }: CategoryShowcaseProps) {
   const handleCategoryClick = useCallback((categoryId: string) => {
     if (onCategoryClick) {
       onCategoryClick(categoryId);
     }
   }, [onCategoryClick]);
+
+  const handleExamplesClick = useCallback((categoryId: string) => {
+    if (onViewExamples) {
+      onViewExamples(categoryId);
+    }
+  }, [onViewExamples]);
 
   return (
     <section className="py-12 md:py-16 relative overflow-hidden bg-black">
@@ -313,17 +320,29 @@ export const CategoryShowcase = memo(function CategoryShowcase({ onCategoryClick
                     </Badge>
                   </div>
 
-                  {/* CTA Button */}
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCategoryClick(category.id);
-                    }}
-                    className="w-full mt-4 px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-purple-500/30"
-                  >
-                    <span>Try {category.title}</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  {/* CTA Buttons */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryClick(category.id);
+                      }}
+                      className="w-full px-4 py-3 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-purple-500/30"
+                    >
+                      <span>Try {category.title}</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleExamplesClick(category.id);
+                      }}
+                      className="w-full px-4 py-3 bg-white/10 text-white rounded-xl font-semibold border border-white/20 hover:border-pink-400/60 transition-all duration-300"
+                    >
+                      View examples
+                    </button>
+                  </div>
                 </div>
 
                 {/* Hover glow effect */}
