@@ -25,6 +25,26 @@
         {
             "source": "/v1/ideas/:path*",
             "destination": "/api/v1/ideas/:path*"
+        },
+        {
+            "source": "/api/credits",
+            "destination": "/api/system.js"
+        },
+        {
+            "source": "/api/presets",
+            "destination": "/api/system.js"
+        },
+        {
+            "source": "/api/models",
+            "destination": "/api/system.js"
+        },
+        {
+            "source": "/api/user-photos",
+            "destination": "/api/system.js"
+        },
+        {
+            "source": "/api/public-photos",
+            "destination": "/api/system.js"
         }
     ],
     "headers": [
