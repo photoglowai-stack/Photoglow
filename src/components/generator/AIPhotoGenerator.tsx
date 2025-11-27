@@ -10,6 +10,8 @@ interface AIPhotoGeneratorProps {
   onSelectModel?: (modelId: string) => void;
 }
 
+// Placeholder mode: only enabled when explicitly set to 'true'
+// Default behavior: show real generator UI (ExploreAIModelsPage)
 const placeholderEnabled =
   typeof import.meta !== 'undefined' && import.meta.env?.VITE_PLACEHOLDER_MODE === 'true';
 

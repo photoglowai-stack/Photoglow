@@ -38,6 +38,7 @@ const ExploreAIModelsPage = lazy(() => import("./components/generator/ExploreMod
 const CreateVideoPage = lazy(() => import("./components/pages/CreateVideo").then(m => ({ default: m.CreateVideoPage })));
 const VideosGalleryPage = lazy(() => import("./components/gallery/Videos").then(m => ({ default: m.VideosGalleryPage })));
 const AdminGenerateCategoriesPage = lazy(() => import("./components/admin/AdminUnified").then(m => ({ default: m.AdminV2Unified })));
+const CategoryExamplesPage = lazy(() => import("./components/pages/CategoryExamplesPage").then(m => ({ default: m.CategoryExamplesPage })));
 
 import { categoryDataMap } from "./components/categoryData";
 import { categoryPagesConfig } from "./components/categoryPagesConfig";
@@ -212,8 +213,8 @@ export default function App() {
   };
 
   const handleShowPhotoGlow = () => {
-    // Redirect to pricing instead of form
-    checkAuthAndNavigate("pricing");
+    // Navigate to AI Photo Generator
+    setCurrentState("ai-photo-generator");
   };
 
   const handleShowIdeas = () => {
@@ -866,6 +867,40 @@ export default function App() {
       </>
     );
   }
+
+  // Examples Pages - Using CategoryExamplesPage component
+  const examplesStates: AppState[] = [
+    "ai-headshots-examples",
+    "ai-model-photo-examples",
+    "ai-dating-photos-examples",
+    "ai-fitness-photos-examples",
+    "ai-selfie-examples",
+    "ai-portrait-examples",
+    "ai-realistic-photo-examples"
+  ];
+
+  if (examplesStates.includes(currentState)) {
+    // Extract category ID from state (remove '-examples' suffix)
+    const categoryId = currentState.replace('-examples', '');
+
+    return (
+      <>
+        <Suspense fallback={<LoadingSkeleton />}>
+          <CategoryExamplesPage
+            categoryId={categoryId}
+            onBack={handleBackFromExamples}
+            onGenerateNow={handleShowPricing}
+          />
+        </Suspense>
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          onAuthenticated={handleAuthenticated}
+        />
+      </>
+    );
+  }
+
 
   // Admin Page (Unified interface for AI generation testing)
   if (currentState === "admin") {
