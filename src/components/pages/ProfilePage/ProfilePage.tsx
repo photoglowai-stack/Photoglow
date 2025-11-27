@@ -30,9 +30,11 @@ import { toast } from 'sonner@2.0.3';
 import { supabase } from '../../../utils/supabase/client';
 import { Header } from '../../shared/Header';
 import { fetchWithTimeout, safeJsonParse, logError, shouldShowError } from '../../../utils/error-handler';
-import { getCurrentUserCredits, addCredits, getCredits } from '../../../utils/credits-client';
+import { getCurrentUserCredits, addCredits } from '../../../utils/credits-client';
 import { VERCEL_API_BASE, API_ENDPOINTS } from '../../../utils/config';
+import { apiRequest } from '../../../utils/api-client';
 import type { UserProfile, GeneratedPhoto, ProfilePageProps } from './ProfilePage.types';
+import { useAuth } from '../../../hooks/useAuth';
 
 /**
  * Page de profil utilisateur PhotoGlow
@@ -73,6 +75,7 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
   const [isLoadingCredits, setIsLoadingCredits] = useState(false);
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { isAdmin } = useAuth();
 
   // ============================================
   // EFFECTS - Load Data on Mount
@@ -219,7 +222,7 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
     try {
       setIsLoadingCredits(true);
       
-      const result = await addCredits(session.user.id, 1, 'manual_add');
+      const result = await addCredits(1);
       
       if (result.success) {
         const newBalance = result.new_balance ?? (credits ?? 0) + 1;
@@ -257,22 +260,11 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
     try {
       setIsLoadingCredits(true);
       
-      const res = await fetch(`${VERCEL_API_BASE}/api/credits`, {
+      const data = await apiRequest<{ credits: number }>(API_ENDPOINTS.credits, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify({ op: 'reset' })
       });
-      
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Erreur lors de la réinitialisation');
-      }
-      
-      const data = await res.json();
-      setCredits(data.credits);
+      setCredits(data.credits ?? 0);
       
       toast.success('Crédits réinitialisés', {
         description: 'Votre solde a été remis à 0'
@@ -334,7 +326,7 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header avec navigation */}
-      <Header onShowLanding={onBack} />
+      <Header onShowLanding={onBack} showAdminButton={isAdmin} />
       
       {/* Page Header */}
       <div className="border-b border-gray-800">

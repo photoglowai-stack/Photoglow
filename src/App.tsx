@@ -12,8 +12,8 @@ import { FAQ } from "./components/landing/FAQ";
 import { CategoryShowcase } from "./components/category/Showcase";
 import { BeforeAfterTransformation } from "./components/landing/BeforeAfter";
 import { AuthModal } from "./components/auth/Modal";
-import { supabase } from "./utils/supabase/client";
 import { Toaster } from "./components/ui/sonner";
+import { useAuth } from "./hooks/useAuth";
 
 // Lazy load heavy components to prevent timeout
 const CategoryHowItWorks = lazy(() => import("./components/category/HowItWorks").then(m => ({ default: m.CategoryHowItWorks })));
@@ -109,6 +109,7 @@ export default function App() {
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const { session, isAdmin: isAdminUser } = useAuth();
 
   // Check for hash-based navigation (e.g., #admin-v2, #category-ai-headshots)
   useEffect(() => {
@@ -155,19 +156,10 @@ export default function App() {
     };
   }, [currentState]);
 
-  // Check for existing Supabase session on mount
+  // Sync auth state with Supabase session
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-    });
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    setIsAuthenticated(!!session);
+  }, [session]);
 
   // Scroll to top when changing pages - instant for better performance
   useEffect(() => {
@@ -220,6 +212,7 @@ export default function App() {
   };
 
   const handleShowAdmin = () => {
+    if (!isAdminUser) return;
     setCurrentState("admin");
   };
 
@@ -642,6 +635,7 @@ export default function App() {
           <AIPhotoGenerator
             onBack={handleBackToLandingFromHeadshots}
             selectedPackage={selectedPackage}
+            onSelectModel={handlePhotoGlowPurposeSelect}
           />
         </Suspense>
         {/* Authentication Modal - Always rendered */}
@@ -945,6 +939,7 @@ export default function App() {
           onShowLanding={handleBackToLanding}
           currentPage={currentState}
           isLandingPage={true}
+          showAdminButton={isAdminUser}
         />
 
         {/* Main content flow - zero gaps between sections */}

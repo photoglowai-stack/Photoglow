@@ -31,6 +31,7 @@ import { toast } from 'sonner@2.0.3';
 import { supabase } from '../../utils/supabase/client';
 import { API_ENDPOINTS } from '../../utils/config';
 import { projectId } from '../../utils/supabase/info';
+import { useAuth } from '../../hooks/useAuth';
 
 type TabType = 'generate' | 'gallery' | 'health' | 'preview-model' | 'categories';
 
@@ -54,6 +55,7 @@ interface AIModel {
 }
 
 export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
+  const { isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>('generate');
 
   // Console state
@@ -274,9 +276,24 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
     }
   };
 
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
+        <div className="text-center space-y-4 max-w-md">
+          <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
+          <div className="text-xl font-semibold">Admin access required</div>
+          <p className="text-gray-400">This section is only available for PhotoGlow administrators.</p>
+          {onBack && (
+            <Button onClick={onBack} className="bg-pink-600 hover:bg-pink-700 text-white w-full">Return</Button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
-      <Header onShowLanding={onBack} currentPage="admin" />
+      <Header onShowLanding={onBack} currentPage="admin" showAdminButton={isAdmin} />
 
       <div className="container mx-auto p-4 md:p-8">
         <div className="max-w-7xl mx-auto">

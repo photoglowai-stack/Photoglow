@@ -10,6 +10,7 @@ import { Card } from '../../ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Header } from '../../shared/Header';
+import { useAuth } from '../../../hooks/useAuth';
 
 /**
  * Props pour le composant IdeasPage
@@ -39,6 +40,7 @@ export interface IdeasPageProps {
  */
 export function IdeasPage({ onBack, onShowPricing }: IdeasPageProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const { isAdmin } = useAuth();
 
   const filteredIdeas = selectedCategory === "All" 
     ? photoIdeas 
@@ -47,10 +49,11 @@ export function IdeasPage({ onBack, onShowPricing }: IdeasPageProps) {
   return (
     <div className="min-h-screen bg-[#111111] text-white">
       {/* Header avec CTA */}
-      <Header 
+      <Header
         onShowPricing={onShowPricing}
         onShowLanding={onBack}
         isLandingPage={false}
+        showAdminButton={isAdmin}
       />
       
       {/* En-tête de page - Responsive */}

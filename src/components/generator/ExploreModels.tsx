@@ -13,12 +13,25 @@ import fitnessPhotosImage from '../../assets/cd7a3ba47085bb0a7c2fa0d53a61aab19bc
 interface ExploreAIModelsPageProps {
   onBack: () => void;
   onModelSelect: (modelId: string) => void;
+  categories?: Array<{ id: string; name?: string; title?: string; description?: string; image_url?: string }>;
+  loadingCategories?: boolean;
+  categoriesError?: string | null;
 }
 
-export function ExploreAIModelsPage({ onBack, onModelSelect }: ExploreAIModelsPageProps) {
+export function ExploreAIModelsPage({ onBack, onModelSelect, categories, loadingCategories, categoriesError }: ExploreAIModelsPageProps) {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
-  const aiModels = [
+  const dynamicModels = (categories || []).map(category => ({
+    id: category.id,
+    title: category.name || category.title || category.id,
+    emoji: '✨',
+    image: category.image_url,
+    gradient: 'from-pink-500 to-purple-500',
+    description: category.description || 'AI generation preset',
+    blurhash: 'L5H2j=00~q00009F-;M{00Rj00M{'
+  }));
+
+  const aiModels = (dynamicModels.length ? dynamicModels : [
     {
       id: 'professional',
       title: 'AI Headshots',
@@ -83,7 +96,7 @@ export function ExploreAIModelsPage({ onBack, onModelSelect }: ExploreAIModelsPa
       description: 'Fitness and athletic photography to showcase your physique',
       blurhash: 'L3H2j=00~q00009F-;M{00Rj00M{'
     },
-  ];
+  ]);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -130,7 +143,11 @@ export function ExploreAIModelsPage({ onBack, onModelSelect }: ExploreAIModelsPa
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-              Choose the perfect AI model for your photos. Each model is trained for specific styles and purposes.
+              {loadingCategories
+                ? 'Loading presets from the Photoglow backend...'
+                : categoriesError
+                  ? categoriesError
+                  : 'Choose the perfect AI model for your photos. Each model is trained for specific styles and purposes.'}
             </p>
             <div className="w-20 h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 mx-auto mt-8 rounded-full shadow-lg shadow-purple-500/50"></div>
           </div>

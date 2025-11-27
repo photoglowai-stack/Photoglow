@@ -5,9 +5,94 @@
  */
 
 import { supabase } from './supabase/client';
-import { VERCEL_API_BASE } from './config';
+import { API_ENDPOINTS, VERCEL_API_BASE } from './config';
 
-const API_BASE = VERCEL_API_BASE;
+const API_BASE_URL =
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) ||
+  (typeof window !== 'undefined' ? window.location.origin : VERCEL_API_BASE || '');
+
+type ApiRequestInit = RequestInit & { auth?: boolean };
+
+export interface ApiError extends Error {
+  status: number;
+  code?: string;
+  details?: unknown;
+}
+
+function resolveUrl(path: string) {
+  if (path.startsWith('http')) return path;
+  if (!API_BASE_URL) return path;
+  return `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+async function getAuthHeader(authEnabled: boolean) {
+  if (!authEnabled) return {};
+
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+
+  if (!token) {
+    return {};
+  }
+
+  return { Authorization: `Bearer ${token}` };
+}
+
+export async function apiRequest<T>(path: string, init: ApiRequestInit = {}): Promise<T> {
+  const { auth = true, headers, body, ...rest } = init;
+  const authHeader = await getAuthHeader(auth);
+  const mergedHeaders = new Headers(headers || {});
+
+  if (body && !(body instanceof FormData)) {
+    mergedHeaders.set('Content-Type', 'application/json');
+  }
+
+  Object.entries(authHeader).forEach(([key, value]) => {
+    mergedHeaders.set(key, value);
+  });
+
+  const response = await fetch(resolveUrl(path), {
+    ...rest,
+    body,
+    headers: mergedHeaders
+  });
+
+  const text = await response.text();
+  let data: any = null;
+
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch (error) {
+      console.error('[apiRequest] Failed to parse JSON response', error);
+    }
+  }
+
+  if (!response.ok) {
+    const errorMessage =
+      data?.error || data?.message || `Request failed with status ${response.status}`;
+
+    const error: ApiError = new Error(errorMessage) as ApiError;
+    error.status = response.status;
+    error.code = data?.error || data?.code;
+    error.details = data;
+    throw error;
+  }
+
+  return (data ?? {}) as T;
+}
+
+export async function apiGet<T>(path: string, init: ApiRequestInit = {}) {
+  return apiRequest<T>(path, { ...init, method: 'GET' });
+}
+
+export async function apiPost<T>(path: string, body?: unknown, init: ApiRequestInit = {}) {
+  return apiRequest<T>(path, {
+    ...init,
+    method: 'POST',
+    body: body instanceof FormData ? body : JSON.stringify(body ?? {})
+  });
+}
 
 // ============================================
 // AUTHENTICATION
@@ -65,68 +150,12 @@ export async function getUserId(): Promise<string> {
  * Fetch user credits balance
  */
 export async function fetchCredits(): Promise<number> {
-  // Guest mode: return demo credits
-  const guestUser = localStorage.getItem('photoglow_demo_user');
-  if (guestUser) {
-    const storedCredits = localStorage.getItem('photoglow_guest_credits');
-    return storedCredits ? parseInt(storedCredits) : 100;
-  }
-  
-  // Check if user is authenticated before fetching
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) {
-    // User not authenticated - return 0 silently (not an error)
-    return 0;
-  }
-  
-  const userId = session.user.id;
-  
   try {
-    // Use Supabase Function (has proper env variables)
-    const { projectId, publicAnonKey } = await import('./supabase/info');
-    const url = `https://${projectId}.supabase.co/functions/v1/make-server-ab844084/credits?user_id=${userId}`;
-    
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${publicAnonKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    // Check if response is JSON (not HTML error page)
-    const contentType = res.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('[fetchCredits] API returned non-JSON response (likely 500 error)');
-      throw new Error('Credits API is unavailable (server error)');
-    }
-    
-    const data = await res.json();
-    
-    if (!res.ok) {
-      // Only log error if it's not an expected auth error
-      if (res.status !== 401 && res.status !== 403) {
-        console.error('[fetchCredits] Error:', data.error || 'Failed to fetch credits');
-      }
-      throw new Error(data.error || 'Failed to fetch credits');
-    }
-    
+    const data = await apiGet<{ credits: number }>(API_ENDPOINTS.credits);
     return data.credits ?? 0;
   } catch (error: any) {
-    // Silent fallback if user is not authenticated (expected behavior)
-    if (error.message?.includes('sign in') || 
-        error.message?.includes('unauthorized') || 
-        error.message?.includes('Invalid or expired token')) {
-      return 0;
-    }
-    
-    // Only log unexpected errors
-    if (!error.message?.includes('Credits API is unavailable')) {
-      console.error('[fetchCredits] Unexpected error:', error.message);
-    }
-    
-    // Fallback: return 0 instead of throwing to avoid breaking the UI
-    return 0;
+    console.error('[fetchCredits] Unexpected error:', error.message || error);
+    throw error;
   }
 }
 
@@ -134,40 +163,10 @@ export async function fetchCredits(): Promise<number> {
  * Debit credits from user account
  */
 export async function debitCredits(amount: number): Promise<number> {
-  // Guest mode: simulate credit debit
-  const guestUser = localStorage.getItem('photoglow_demo_user');
-  if (guestUser) {
-    const storedCredits = localStorage.getItem('photoglow_guest_credits');
-    const currentCredits = storedCredits ? parseInt(storedCredits) : 100;
-    
-    if (currentCredits < amount) {
-      throw new Error('Not enough credits');
-    }
-    
-    const newCredits = currentCredits - amount;
-    localStorage.setItem('photoglow_guest_credits', newCredits.toString());
-    return newCredits;
-  }
-  
-  const userId = await getUserId();
-  
   try {
-    // Use Supabase RPC function debit_credits
-    const { error } = await supabase.rpc('debit_credits', {
-      p_user_id: userId,
-      p_amount: amount
-    });
-    
-    if (error) {
-      if (error.message?.includes('Insufficient')) {
-        throw new Error('Not enough credits');
-      }
-      throw new Error(error.message || 'Failed to debit credits');
-    }
-    
-    // Fetch new balance
-    const newBalance = await fetchCredits();
-    
+    const data = await apiPost<{ credits: number }>(API_ENDPOINTS.credits, { op: 'debit', amount });
+
+    const newBalance = data.credits ?? 0;
     console.log('[debitCredits] ✅ Credits debited:', amount, '→ Remaining:', newBalance);
     return newBalance;
   } catch (error: any) {
@@ -267,7 +266,7 @@ export async function generateTextToImage(params: GenerateTextToImageParams): Pr
     await debitCredits(num_outputs);
   }
   
-  const res = await fetch(`${API_BASE}/api/generate`, {
+  const res = await fetch(resolveUrl('/api/generate'), {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -346,7 +345,7 @@ export async function generateImageToImage(params: GenerateImageToImageParams): 
   }
   
   // 3. Call generation API
-  const res = await fetch(`${API_BASE}/api/generate`, {
+  const res = await fetch(resolveUrl('/api/generate'), {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -418,7 +417,7 @@ export async function generateGen4Image(params: GenerateGen4Params): Promise<Gen
     await debitCredits(1);
   }
   
-  const res = await fetch(`${API_BASE}/api/generate-gen4-image`, {
+  const res = await fetch(resolveUrl('/api/generate-gen4-image'), {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,

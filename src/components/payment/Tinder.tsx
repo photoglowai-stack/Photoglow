@@ -201,7 +201,7 @@ export function TinderPaymentPage({ onPurchase, onBack, onShowLanding }: TinderP
 
   return (
     <div className="min-h-screen bg-[#0B0B0D] relative overflow-hidden">
-      <Header onShowLanding={onShowLanding} currentPage="pricing" />
+      <Header onShowLanding={onShowLanding} currentPage="pricing" showAdminButton={false} />
       
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/8 via-transparent to-pink-900/8 pointer-events-none" />

@@ -3,10 +3,11 @@
  * Toutes les URLs et constantes d'environnement
  */
 
-// API Backend - Maintenant dans le même domaine (monorepo)
-// En production : même domaine, pas besoin de base URL
-// En dev : localhost (vercel dev démarre tout ensemble)
-export const VERCEL_API_BASE = import.meta.env.PROD ? '' : '';
+// API Backend - Même origin par défaut pour Vercel
+// Peut être surchargé avec VITE_API_BASE_URL si besoin
+export const VERCEL_API_BASE =
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) ||
+  (typeof window !== 'undefined' ? window.location.origin : '');
 
 // Endpoints API unifiés
 export const API_ENDPOINTS = {
@@ -14,6 +15,8 @@ export const API_ENDPOINTS = {
   generateGen4: `/api/generate-gen4-image`,
   generateFromScratch: `/api/generate-from-scratch`,
   generate: `/api/generate`,
+  presets: `/api/presets`,
+  system: `/api/system`,
   
   // Preview V1 (optimisé V6)
   V1_PREVIEW: `/api/v1-preview`,

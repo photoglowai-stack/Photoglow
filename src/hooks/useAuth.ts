@@ -23,6 +23,8 @@ export interface UseAuthReturn {
   session: Session | null;
   /** Indique si l'état auth est en cours de chargement */
   loading: boolean;
+  /** Indique si l'utilisateur est admin selon la configuration front */
+  isAdmin: boolean;
 }
 
 /**
@@ -70,12 +72,18 @@ export function useAuth(): UseAuthReturn {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      const adminEmails = ((import.meta.env.VITE_ADMIN_EMAILS as string | undefined)?.split(',') || [])
+        .map(s => s.trim().toLowerCase())
+        .filter(Boolean);
+      const isAdminEmail = session?.user?.email ? adminEmails.includes(session.user.email.toLowerCase()) : false;
+      setIsAdmin(isAdminEmail || Boolean(session?.user?.user_metadata?.is_admin));
       setLoading(false);
     });
 
@@ -83,11 +91,16 @@ export function useAuth(): UseAuthReturn {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      const adminEmails = ((import.meta.env.VITE_ADMIN_EMAILS as string | undefined)?.split(',') || [])
+        .map(s => s.trim().toLowerCase())
+        .filter(Boolean);
+      const isAdminEmail = session?.user?.email ? adminEmails.includes(session.user.email.toLowerCase()) : false;
+      setIsAdmin(isAdminEmail || Boolean(session?.user?.user_metadata?.is_admin));
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  return { user, session, loading };
+  return { user, session, loading, isAdmin };
 }

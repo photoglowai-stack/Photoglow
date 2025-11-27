@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from './useAuth';
-import { projectId } from '../utils/supabase/info';
+import { apiGet, ApiError } from '../utils/api-client';
+import { API_ENDPOINTS } from '../utils/config';
 
 /**
  * Credits cache configuration
@@ -114,39 +115,32 @@ export function useUserCredits() {
     setError(null);
 
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-ab844084/credits`,
-        {
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      const data = await apiGet<{ credits: number; isAdmin?: boolean }>(API_ENDPOINTS.credits);
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch credits');
-      }
-
-      const data = await response.json();
-      
-      if (data.success) {
-        if (isMountedRef.current) {
-          setCredits(data.credits);
-          saveToCache(data.credits);
-          lastFetchTimeRef.current = Date.now();
-        }
-      } else {
-        throw new Error(data.error || 'Failed to fetch credits');
+      if (isMountedRef.current) {
+        setCredits(data.credits ?? 0);
+        saveToCache(data.credits ?? 0);
+        lastFetchTimeRef.current = Date.now();
       }
     } catch (err: any) {
+      const error = err as ApiError;
       // Only log errors if user is authenticated (not just "not logged in" errors)
       if (session?.access_token) {
         console.error('[Credits] ❌ Fetch error:', err);
       }
-      
+
+      const friendlyMessage = (() => {
+        if (error?.code === 'missing_bearer_token' || error?.status === 401) {
+          return 'Vous devez être connecté pour voir vos crédits.';
+        }
+        if (error?.code === 'missing_env') {
+          return 'Configuration serveur incomplète : contactez un administrateur.';
+        }
+        return error?.message || 'Failed to fetch credits';
+      })();
+
       if (isMountedRef.current) {
-        setError(err.message || 'Failed to fetch credits');
+        setError(friendlyMessage);
         
         // Try to use stale cache on error
         const cachedCredits = loadFromCache();
