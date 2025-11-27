@@ -15,6 +15,8 @@ export interface HeaderProps {
   onShowPhotoGlow?: () => void;
   /** Callback pour afficher la page d'idées */
   onShowIdeas?: () => void;
+  /** Callback pour afficher la galerie de vidéos */
+  onShowVideos?: () => void;
   /** Callback pour afficher la modale de connexion */
   onShowAuth?: () => void;
   /** Callback pour accéder à l'interface admin */
@@ -53,6 +55,7 @@ export function Header({
   onShowPricing,
   onShowPhotoGlow,
   onShowIdeas,
+  onShowVideos,
   onShowAuth,
   onShowAdmin,
   onShowProfile,
@@ -64,6 +67,7 @@ export function Header({
 }: HeaderProps) {
   const navItems = [
     { label: 'Generator', onClick: onShowPhotoGlow, key: 'photoglow' },
+    { label: 'Videos', onClick: onShowVideos, key: 'videos-gallery' },
     { label: 'Ideas', onClick: onShowIdeas, key: 'ideas' },
     { label: 'Profile', onClick: onShowProfile, key: 'profile' }
   ].filter(item => Boolean(item.onClick));
@@ -89,9 +93,8 @@ export function Header({
               <button
                 key={item.key}
                 onClick={item.onClick}
-                className={`px-3 py-2 rounded-lg transition-colors hover:text-white hover:bg-white/10 ${
-                  currentPage === item.key ? 'text-white bg-white/10' : ''
-                }`}
+                className={`px-3 py-2 rounded-lg transition-colors hover:text-white hover:bg-white/10 ${currentPage === item.key ? 'text-white bg-white/10' : ''
+                  }`}
               >
                 {item.label}
               </button>

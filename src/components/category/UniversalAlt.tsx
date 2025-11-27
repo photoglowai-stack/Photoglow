@@ -28,6 +28,7 @@ interface UniversalCategoryPageProps {
   onGenerateNow: () => void;
   onCategorySelect?: (categoryId: string) => void;
   onPhotoDetailClick?: (photoUrl: string, photoIndex: number) => void;
+  onViewExamples?: () => void;
 }
 
 // Map categoryId to config keys
@@ -45,7 +46,7 @@ const categoryIdToConfigKey: Record<string, string> = {
   'lifestyle': 'ai-realistic-photo', // Fallback: lifestyle → realistic photo
 };
 
-export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: UniversalCategoryPageProps) {
+export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow, onViewExamples }: UniversalCategoryPageProps) {
   const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
   const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
 
@@ -118,17 +119,28 @@ export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: Uni
           </div>
           <span className="text-white text-base md:text-xl truncate">{config.title} {config.subtitle}</span>
         </div>
-        
-        <Badge className={`hidden md:flex bg-gradient-to-r ${config.colors.badgeGradient} border-${config.colors.gradient.split('-')[1]}-500/30 flex-shrink-0`}>
-          <Star className="w-4 h-4 mr-2" />
-          {config.badge}
-        </Badge>
+
+        <div className="flex items-center gap-2">
+          {onViewExamples && (
+            <Button
+              onClick={onViewExamples}
+              variant="outline"
+              className={`hidden md:flex border-${config.colors.gradient.split('-')[1]}-500/30 text-gray-300 hover:text-white hover:bg-${config.colors.gradient.split('-')[1]}-500/10`}
+            >
+              View Examples
+            </Button>
+          )}
+          <Badge className={`hidden md:flex bg-gradient-to-r ${config.colors.badgeGradient} border-${config.colors.gradient.split('-')[1]}-500/30 flex-shrink-0`}>
+            <Star className="w-4 h-4 mr-2" />
+            {config.badge}
+          </Badge>
+        </div>
       </header>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
         {/* Centered Content Layout - Identical structure */}
         <div className="text-center space-y-16">
-          
+
           {/* Hero Section */}
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-800">
             <h1 className="text-4xl md:text-6xl text-white leading-tight max-w-4xl mx-auto">
@@ -137,7 +149,7 @@ export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: Uni
                 {" "}{config.subtitle}
               </span>
             </h1>
-            
+
             <p className="text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
               Professional AI-enhanced photos in minutes. {config.keywords.slice(0, 3).join(', ')} powered by advanced AI technology.
             </p>
@@ -161,30 +173,28 @@ export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: Uni
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <button
                   onClick={() => setSelectedGender('male')}
-                  className={`p-4 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 ${
-                    selectedGender === 'male'
+                  className={`p-4 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 ${selectedGender === 'male'
                       ? `border-${config.colors.gradient.split('-')[1]}-500 bg-${config.colors.gradient.split('-')[1]}-500/20 shadow-lg`
                       : 'border-gray-700 bg-gray-800/50'
-                  }`}
+                    }`}
                 >
                   <span className="text-4xl mb-2 block">👨</span>
                   <span className="text-white">Man</span>
                 </button>
-                
+
                 <button
                   onClick={() => setSelectedGender('female')}
-                  className={`p-4 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 ${
-                    selectedGender === 'female'
+                  className={`p-4 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 ${selectedGender === 'female'
                       ? `border-${config.colors.gradient.split('-')[1]}-500 bg-${config.colors.gradient.split('-')[1]}-500/20 shadow-lg`
                       : 'border-gray-700 bg-gray-800/50'
-                  }`}
+                    }`}
                 >
                   <span className="text-4xl mb-2 block">👩</span>
                   <span className="text-white">Woman</span>
                 </button>
               </div>
 
-              <Button 
+              <Button
                 onClick={handleStartForm}
                 size="lg"
                 className={`w-full bg-gradient-to-r ${config.colors.buttonGradient} text-white py-6 text-lg hover:shadow-2xl hover:scale-102 active:scale-98 transition-all`}
@@ -285,7 +295,7 @@ export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: Uni
                   <div className={`absolute -top-4 left-1/2 -translate-x-1/2 w-10 h-10 bg-gradient-to-r ${config.colors.gradient} rounded-full flex items-center justify-center text-white shadow-lg z-10`}>
                     {item.step}
                   </div>
-                  
+
                   <div className="mt-6 space-y-4 text-center">
                     <div className={`w-16 h-16 bg-gradient-to-br ${config.colors.badgeGradient} rounded-2xl flex items-center justify-center mx-auto border border-gray-700`}>
                       <item.icon className="w-8 h-8 text-white" />
@@ -346,7 +356,7 @@ export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: Uni
             </div>
 
             <div className="text-center mt-6">
-              <p 
+              <p
                 key={currentExampleIndex}
                 className={`text-2xl bg-gradient-to-r ${config.colors.gradient} bg-clip-text text-transparent animate-fade-in`}
               >
@@ -368,11 +378,10 @@ export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: Uni
                   <button
                     key={index}
                     onClick={() => setCurrentExampleIndex(index)}
-                    className={`h-2 rounded-full transition-all ${
-                      index === currentExampleIndex 
+                    className={`h-2 rounded-full transition-all ${index === currentExampleIndex
                         ? `bg-gradient-to-r ${config.colors.gradient} w-8`
                         : 'bg-gray-600 w-2'
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -544,30 +553,28 @@ export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: Uni
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <button
                   onClick={() => setSelectedGender('male')}
-                  className={`p-6 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 ${
-                    selectedGender === 'male'
+                  className={`p-6 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 ${selectedGender === 'male'
                       ? `border-${config.colors.gradient.split('-')[1]}-500 bg-${config.colors.gradient.split('-')[1]}-500/20 shadow-lg`
                       : 'border-gray-700 bg-gray-800/50'
-                  }`}
+                    }`}
                 >
                   <span className="text-5xl mb-2 block">👨</span>
                   <span className="text-white">Man</span>
                 </button>
-                
+
                 <button
                   onClick={() => setSelectedGender('female')}
-                  className={`p-6 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 ${
-                    selectedGender === 'female'
+                  className={`p-6 rounded-xl border-2 transition-all hover:scale-105 active:scale-95 ${selectedGender === 'female'
                       ? `border-${config.colors.gradient.split('-')[1]}-500 bg-${config.colors.gradient.split('-')[1]}-500/20 shadow-lg`
                       : 'border-gray-700 bg-gray-800/50'
-                  }`}
+                    }`}
                 >
                   <span className="text-5xl mb-2 block">👩</span>
                   <span className="text-white">Woman</span>
                 </button>
               </div>
 
-              <Button 
+              <Button
                 onClick={handleStartForm}
                 size="lg"
                 className={`w-full bg-gradient-to-r ${config.colors.buttonGradient} text-white py-6 text-lg hover:shadow-2xl hover:scale-102 active:scale-98 transition-all`}
@@ -599,7 +606,7 @@ export function UniversalCategoryPage({ categoryId, onBack, onGenerateNow }: Uni
       </section>
 
       {/* Before/After Transformation */}
-      <BeforeAfterTransformation 
+      <BeforeAfterTransformation
         onStartTransformation={handleStartForm}
       />
     </div>

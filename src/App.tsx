@@ -27,8 +27,6 @@ const AdminV2Unified = lazy(() => import("./components/admin/AdminUnified").then
 const SystemHealthPanel = lazy(() => import("./components/admin/SystemHealthPanel").then(m => ({ default: m.default })));
 
 // Keep these lazy-loaded for better initial page load
-const PhotoGlowPage = lazy(() => import("./components/pages/PhotoGlowPage").then(m => ({ default: m.PhotoGlowPage })));
-const PhotoGlowPricing = lazy(() => import("./components/payment/Pricing").then(m => ({ default: m.PhotoGlowPricing })));
 const PhotoDetailPage = lazy(() => import("./components/gallery/PhotoDetail").then(m => ({ default: m.PhotoDetailPage })));
 const CategoryPage = lazy(() => import("./components/category/CategoryPage").then(m => ({ default: m.CategoryPage })));
 const UniversalCategoryPage = lazy(() => import("./components/category/UniversalAlt").then(m => ({ default: m.UniversalCategoryPage })));
@@ -221,6 +219,10 @@ export default function App() {
     setCurrentState("ideas");
   };
 
+  const handleShowVideos = () => {
+    setCurrentState("videos-gallery");
+  };
+
   const handleShowAdmin = () => {
     setCurrentState("admin");
   };
@@ -254,11 +256,11 @@ export default function App() {
   };
 
   const handleBackToPhotoGlow = () => {
-    setCurrentState("photoglow");
+    setCurrentState("ai-photo-generator");
   };
 
   const handleCategoryPurchase = () => {
-    setCurrentState("photoglow-pricing");
+    setCurrentState("pricing");
   };
 
   const handleStyleClick = (styleId: string) => {
@@ -465,29 +467,12 @@ export default function App() {
 
 
 
-  if (currentState === "photoglow") {
-    return (
-      <>
-        <Suspense fallback={<LoadingSkeleton />}>
-          <PhotoGlowPage
-            onBack={handleBackToLanding}
-            onSelectPurpose={handlePhotoGlowPurposeSelect}
-          />
-        </Suspense>
-        {/* Authentication Modal - Always rendered */}
-        <AuthModal
-          isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
-          onAuthenticated={handleAuthenticated}
-        />
-      </>
-    );
-  }
+
 
   if (currentState === "category") {
     const categoryData = categoryDataMap[selectedCategory];
     if (!categoryData) {
-      setCurrentState("photoglow");
+      setCurrentState("ai-photo-generator");
       return null;
     }
     return (
@@ -509,25 +494,7 @@ export default function App() {
     );
   }
 
-  if (currentState === "photoglow-pricing") {
-    return (
-      <>
-        <Suspense fallback={<LoadingSkeleton />}>
-          <PhotoGlowPricing
-            selectedPurpose={selectedPurpose}
-            onPurchase={handlePurchase}
-            onBack={handleBackToPhotoGlow}
-          />
-        </Suspense>
-        {/* Authentication Modal - Always rendered */}
-        <AuthModal
-          isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
-          onAuthenticated={handleAuthenticated}
-        />
-      </>
-    );
-  }
+
 
   if (currentState === "pricing") {
     return (
@@ -559,6 +526,7 @@ export default function App() {
             onGenerateNow={handleHeadshotsGenerateNow}
             onCategorySelect={handleCategoryNavigation}
             onPhotoDetailClick={(photoUrl, photoIndex) => handlePhotoClick(photoIndex, photoUrl, 'ai-headshots')}
+            onViewExamples={() => handleViewExamples(currentState)}
           />
         </Suspense>
         {/* Authentication Modal - Always rendered */}
@@ -581,6 +549,7 @@ export default function App() {
             onGenerateNow={handleHeadshotsGenerateNow}
             onCategorySelect={handleCategoryNavigation}
             onPhotoDetailClick={(photoUrl, photoIndex) => handlePhotoClick(photoIndex, photoUrl, 'ai-model-photo')}
+            onViewExamples={() => handleViewExamples(currentState)}
           />
         </Suspense>
         {/* Authentication Modal - Always rendered */}
@@ -603,6 +572,7 @@ export default function App() {
             onGenerateNow={handleHeadshotsGenerateNow}
             onCategorySelect={handleCategoryNavigation}
             onPhotoDetailClick={(photoUrl, photoIndex) => handlePhotoClick(photoIndex, photoUrl, 'ai-realistic-photo')}
+            onViewExamples={() => handleViewExamples(currentState)}
           />
         </Suspense>
         {/* Authentication Modal - Always rendered */}
@@ -625,6 +595,7 @@ export default function App() {
             onGenerateNow={handleHeadshotsGenerateNow}
             onCategorySelect={handleCategoryNavigation}
             onPhotoDetailClick={(photoUrl, photoIndex) => handlePhotoClick(photoIndex, photoUrl, 'ai-selfie-generator')}
+            onViewExamples={() => handleViewExamples(currentState)}
           />
         </Suspense>
         {/* Authentication Modal - Always rendered */}
@@ -667,6 +638,7 @@ export default function App() {
             onGenerateNow={handleHeadshotsGenerateNow}
             onCategorySelect={handleCategoryNavigation}
             onPhotoDetailClick={(photoUrl, photoIndex) => handlePhotoClick(photoIndex, photoUrl, 'ai-portrait-generator')}
+            onViewExamples={() => handleViewExamples(currentState)}
           />
         </Suspense>
         {/* Authentication Modal - Always rendered */}
@@ -689,6 +661,7 @@ export default function App() {
             onGenerateNow={handleHeadshotsGenerateNow}
             onCategorySelect={handleCategoryNavigation}
             onPhotoDetailClick={(photoUrl, photoIndex) => handlePhotoClick(photoIndex, photoUrl, 'ai-dating-photos')}
+            onViewExamples={() => handleViewExamples(currentState)}
           />
         </Suspense>
         {/* Authentication Modal - Always rendered */}
@@ -976,6 +949,7 @@ export default function App() {
           onShowPricing={handleShowPricing}
           onShowPhotoGlow={handleShowPhotoGlow}
           onShowIdeas={handleShowIdeas}
+          onShowVideos={handleShowVideos}
           onShowAuth={() => setShowAuthModal(true)}
           onShowAdmin={handleShowAdmin}
           onShowProfile={handleShowProfile}
