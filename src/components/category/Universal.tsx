@@ -3,9 +3,9 @@ import { Star, ArrowLeft } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { SocialProof } from '../landing/SocialProof';
-import { HowItWorks } from './HowItWorks';
+import { CategoryHowItWorks } from './HowItWorks';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { FAQ } from './FAQ';
+import { CategoryFAQ } from './FAQ';
 import { CategoryTestimonials } from './Testimonials';
 import { categoryPagesConfig, CategoryPageConfig } from '../categoryPagesConfig';
 
@@ -245,7 +245,7 @@ export const CategoryUniversalPage = memo(function CategoryUniversalPage({
       {/* ========================================
           HOW IT WORKS - Reused Structure
           ======================================== */}
-      <HowItWorks />
+      <CategoryHowItWorks colorScheme={colors} />
 
       {/* ========================================
           GALLERY / EXAMPLE SECTION
@@ -300,7 +300,7 @@ export const CategoryUniversalPage = memo(function CategoryUniversalPage({
       {/* ========================================
           FAQ - Category Specific
           ======================================== */}
-      <FAQ categoryId={categoryId} accentColor={colors.primary} />
+      <CategoryFAQ categoryId={categoryId} accentColor={colors.primary} />
 
       {/* ========================================
           FINAL CTA SECTION
