@@ -12,7 +12,7 @@ import {
   ArrowLeft,
   Clock
 } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import { projectId } from '../../utils/supabase/info';
 
 interface VideoItem {

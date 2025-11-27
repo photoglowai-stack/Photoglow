@@ -9,7 +9,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '../../ui/button';
-import { LazyImage } from '../../LazyImage';
+import { LazyImage } from '../shared/LazyImage/LazyImage';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 import { Badge } from '../../ui/badge';
 import { Alert, AlertDescription } from '../../ui/alert';

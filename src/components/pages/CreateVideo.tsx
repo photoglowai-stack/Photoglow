@@ -6,17 +6,17 @@ import { Label } from '../ui/label';
 import { Card } from '../ui/card';
 import { Progress } from '../ui/progress';
 import { toast } from 'sonner@2.0.3';
-import { 
-  Loader2, 
-  Video, 
-  Upload, 
+import {
+  Loader2,
+  Video,
+  Upload,
   ArrowLeft,
   Download,
   Play
 } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { useAuth } from '../hooks/useAuth';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { useAuth } from '../../hooks/useAuth';
+import { projectId, publicAnonKey } from '../../utils/supabase/info';
 
 interface CreateVideoPageProps {
   onBack?: () => void;
@@ -25,7 +25,7 @@ interface CreateVideoPageProps {
 
 export function CreateVideoPage({ onBack, initialImageUrl }: CreateVideoPageProps) {
   const { session } = useAuth();
-  
+
   const [imageUrl, setImageUrl] = useState(initialImageUrl || '');
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -53,7 +53,7 @@ export function CreateVideoPage({ onBack, initialImageUrl }: CreateVideoPageProp
     // Upload to Supabase Storage
     try {
       setUploadProgress(10);
-      
+
       // Get signed upload URL
       const signedUrlResponse = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-ab844084/upload-signed-url`,
@@ -75,7 +75,7 @@ export function CreateVideoPage({ onBack, initialImageUrl }: CreateVideoPageProp
       }
 
       const { signedUrl, publicUrl } = await signedUrlResponse.json();
-      
+
       setUploadProgress(50);
 
       // Upload file
@@ -135,7 +135,7 @@ export function CreateVideoPage({ onBack, initialImageUrl }: CreateVideoPageProp
       }
 
       const data = await response.json();
-      
+
       if (data.success && data.video_url) {
         setGeneratedVideoUrl(data.video_url);
         toast.success('Video generated successfully!');
@@ -192,7 +192,7 @@ export function CreateVideoPage({ onBack, initialImageUrl }: CreateVideoPageProp
             <Card className="bg-[#18181B] border-purple-500/30 p-6 space-y-6">
               <div className="space-y-3">
                 <Label className="text-white font-semibold">Source Image</Label>
-                
+
                 {imageUrl ? (
                   <div className="space-y-3">
                     <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-purple-500/50">
@@ -284,7 +284,7 @@ export function CreateVideoPage({ onBack, initialImageUrl }: CreateVideoPageProp
             <Card className="bg-[#18181B] border-purple-500/30 p-6">
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-white">Preview</h3>
-                
+
                 {generatedVideoUrl ? (
                   <div className="space-y-4">
                     <div className="relative aspect-square rounded-lg overflow-hidden border-2 border-purple-500/50 bg-black">

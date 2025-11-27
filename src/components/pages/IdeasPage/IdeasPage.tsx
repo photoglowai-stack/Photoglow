@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { photoIdeas, categories } from '../../data/ideasData';
+import { photoIdeas, categories } from '../../ideasData';
 import { Badge } from '../../ui/badge';
 import { Card } from '../../ui/card';
 import { ArrowLeft } from 'lucide-react';

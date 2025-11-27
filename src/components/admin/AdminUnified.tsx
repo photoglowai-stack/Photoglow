@@ -7,9 +7,9 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Progress } from '../ui/progress';
-import { 
-  Wand2, 
-  Activity, 
+import {
+  Wand2,
+  Activity,
   ImageIcon,
   Sparkles,
   Upload,
@@ -22,10 +22,10 @@ import {
 } from 'lucide-react';
 import HealthCheckPanel from './HealthCheckPanel';
 import { GenerateJobsTab } from './GenerateJobsTab';
-import { PreviewAIModelTab } from './PreviewAIModelTab';
+// import { PreviewAIModelTab } from './PreviewAIModelTab';  // TODO: File missing
 import { AdminConsole } from './AdminConsole';
 import { AdminGenerateTab } from './AdminGenerateTab';
-import { AdminGenerateIdeasSimple } from './AdminGenerateIdeasSimple';
+// import { AdminGenerateIdeasSimple } from './AdminGenerateIdeasSimple';  // TODO: File missing
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { toast } from 'sonner@2.0.3';
 import { supabase } from '../../utils/supabase/client';
@@ -55,10 +55,10 @@ interface AIModel {
 
 export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
   const [activeTab, setActiveTab] = useState<TabType>('generate');
-  
+
   // Console state
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
-  
+
   // Generate tab state - GEN4 vs FLUX
   const [selectedModel, setSelectedModel] = useState<'flux' | 'gen4'>('flux');
   const [prompt, setPrompt] = useState('');
@@ -67,7 +67,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPreview, setGeneratedPreview] = useState<string>('');
   const [generatedItems, setGeneratedItems] = useState<GeneratedImage[]>([]);
-  
+
   // Gallery state
   const [galleryImages, setGalleryImages] = useState<GeneratedImage[]>([]);
   const [isLoadingGallery, setIsLoadingGallery] = useState(false);
@@ -76,7 +76,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
   const handleReferenceImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     setReferenceImage(file);
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -90,27 +90,27 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
   // Upload file to Supabase Storage
   const uploadToSupabase = async (file: File | null): Promise<string | null> => {
     if (!file) return null;
-    
+
     try {
       const path = `uploads/${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
-      
+
       const { data, error } = await supabase.storage
         .from("photos")
         .upload(path, file, {
           cacheControl: "3600",
           upsert: false
         });
-      
+
       if (error) {
         console.error("Upload error:", error);
         toast.error(`Upload failed: ${error.message}`);
         return null;
       }
-      
+
       const { data: pub } = supabase.storage
         .from("photos")
         .getPublicUrl(path);
-      
+
       return pub?.publicUrl ?? null;
     } catch (error: any) {
       console.error("Upload exception:", error);
@@ -133,7 +133,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
       if (selectedModel === 'flux') {
         // FLUX via v1-preview (Pollinations)
         console.log('🎬 Using FLUX via v1-preview');
-        
+
         // Upload reference image if provided
         let referenceUrl = null;
         if (referenceImage) {
@@ -158,7 +158,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
         console.log('📤 FLUX payload:', payload);
 
         const { data: session } = await supabase.auth.getSession();
-        
+
         const res = await fetch(
           `https://${projectId}.supabase.co/functions/v1/make-server-ab844084/v1-preview`,
           {
@@ -182,7 +182,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
       } else if (selectedModel === 'gen4') {
         // GEN4 via Replicate
         console.log('🎬 Using GEN4 via Replicate');
-        
+
         // Upload reference images
         let referenceUrls: string[] = [];
         if (referenceImage) {
@@ -192,7 +192,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
         }
 
         const mode = referenceUrls.length > 0 ? 'img2img' : 'text2img';
-        
+
         const payload = {
           mode,
           model: 'gen4',
@@ -210,7 +210,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
         });
 
         const data = await res.json();
-        
+
         if (!res.ok || !data.image_url) {
           throw new Error(data.error || 'Gen4 generation failed');
         }
@@ -220,7 +220,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
 
       // Save to preview and gallery
       setGeneratedPreview(imageUrl);
-      
+
       const newItem: GeneratedImage = {
         id: crypto.randomUUID(),
         image_url: imageUrl,
@@ -228,9 +228,9 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
         model: selectedModel,
         created_at: new Date().toISOString()
       };
-      
+
       setGeneratedItems(prev => [newItem, ...prev]);
-      
+
       // Optionally save to Supabase
       const { data: session } = await supabase.auth.getSession();
       if (session?.session?.user?.id) {
@@ -243,7 +243,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
             model: selectedModel,
           });
       }
-      
+
       toast.success(`✨ Image generated with ${selectedModel.toUpperCase()}!`);
 
     } catch (error: any) {
@@ -277,7 +277,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header onShowLanding={onBack} currentPage="admin" />
-      
+
       <div className="container mx-auto p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -352,11 +352,11 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
           )}
 
           {activeTab === 'preview-model' && (
-            <PreviewAIModelTab />
+            <div className="text-white p-8 text-center">Preview Model Tab - TODO</div>
           )}
 
           {activeTab === 'categories' && (
-            <AdminGenerateIdeasSimple />
+            <div className="text-white p-8 text-center">Categories Tab - TODO</div>
           )}
 
           {/* OLD GENERATE TAB - REPLACED WITH JOBS API */}
@@ -375,11 +375,10 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => setSelectedModel('flux')}
-                      className={`p-4 rounded-lg border-2 transition-all ${
-                        selectedModel === 'flux'
+                      className={`p-4 rounded-lg border-2 transition-all ${selectedModel === 'flux'
                           ? 'border-purple-500 bg-purple-500/20'
                           : 'border-purple-500/30 bg-[#0B0B0D] hover:border-purple-500/50'
-                      }`}
+                        }`}
                     >
                       <div className="text-center">
                         <Sparkles className={`w-6 h-6 mx-auto mb-2 ${selectedModel === 'flux' ? 'text-purple-400' : 'text-gray-400'}`} />
@@ -387,14 +386,13 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                         <p className="text-xs text-gray-500 mt-1">Pollinations</p>
                       </div>
                     </button>
-                    
+
                     <button
                       onClick={() => setSelectedModel('gen4')}
-                      className={`p-4 rounded-lg border-2 transition-all ${
-                        selectedModel === 'gen4'
+                      className={`p-4 rounded-lg border-2 transition-all ${selectedModel === 'gen4'
                           ? 'border-pink-500 bg-pink-500/20'
                           : 'border-pink-500/30 bg-[#0B0B0D] hover:border-pink-500/50'
-                      }`}
+                        }`}
                     >
                       <div className="text-center">
                         <Wand2 className={`w-6 h-6 mx-auto mb-2 ${selectedModel === 'gen4' ? 'text-pink-400' : 'text-gray-400'}`} />
@@ -421,7 +419,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                 <div className="space-y-2">
                   <Label className="text-white">Reference Image (Optional)</Label>
                   <p className="text-xs text-gray-400">Upload an image to use as reference</p>
-                  
+
                   <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-purple-500/30 rounded-lg cursor-pointer hover:border-purple-500/50 bg-[#0B0B0D] transition-colors relative">
                     {referenceImagePreview ? (
                       <>
@@ -457,11 +455,10 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                 <Button
                   onClick={handleGenerate}
                   disabled={isGenerating || !prompt.trim()}
-                  className={`w-full ${
-                    selectedModel === 'flux'
+                  className={`w-full ${selectedModel === 'flux'
                       ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
                       : 'bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600'
-                  }`}
+                    }`}
                 >
                   {isGenerating ? (
                     <>
@@ -504,7 +501,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                       <h3 className="text-xl text-white">Generated Images</h3>
                       <span className="text-sm text-gray-400">({generatedItems.length})</span>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {generatedItems.map((item) => (
                         <Card key={item.id} className="overflow-hidden bg-[#18181B] border-purple-500/20 hover:border-purple-500/50 transition-colors">
@@ -587,7 +584,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                     <User className="w-5 h-5 text-purple-400" />
                     <h2 className="text-xl text-white">Your Models</h2>
                   </div>
-                  
+
                   {isLoadingModels ? (
                     <div className="flex items-center justify-center py-4">
                       <Loader2 className="w-6 h-6 animate-spin text-purple-400" />
@@ -647,7 +644,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                       <User className="w-4 h-4" />
                       Attributs Physiques
                     </h4>
-                    
+
                     <div className="grid grid-cols-2 gap-3">
                       {/* Gender */}
                       <div className="space-y-2 col-span-2">
@@ -784,7 +781,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                       <Sparkles className="w-4 h-4" />
                       Scene & Style
                     </h4>
-                    
+
                     <div className="grid grid-cols-2 gap-3">
                       {/* Background */}
                       <div className="space-y-2">
@@ -914,7 +911,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
                         <div className="border-2 border-dashed border-purple-500/30 rounded-lg p-6 text-center hover:border-purple-500/50 transition-colors">
                           <Upload className="w-8 h-8 mx-auto mb-2 text-purple-400" />
                           <p className="text-sm text-gray-300">
-                            {uploadedPhotos.length > 0 
+                            {uploadedPhotos.length > 0
                               ? `${uploadedPhotos.length} photo(s) uploaded`
                               : 'Click to upload photos'
                             }
@@ -971,7 +968,7 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
           )}
         </div>
       </div>
-      
+
       {/* BOUTON TOGGLE CONSOLE - Fixe en bas à gauche */}
       <button
         onClick={() => setIsConsoleOpen(!isConsoleOpen)}
@@ -980,15 +977,15 @@ export function AdminV2Unified({ onBack }: { onBack?: () => void }) {
       >
         <Terminal className="w-6 h-6" />
         {!isConsoleOpen && (
-          <Badge 
-            variant="outline" 
+          <Badge
+            variant="outline"
             className="absolute -top-1 -right-1 bg-orange-500 text-white border-orange-600 text-xs px-2"
           >
             Debug
           </Badge>
         )}
       </button>
-      
+
       {/* ADMIN CONSOLE - Flotant en bas à droite */}
       <AdminConsole isOpen={isConsoleOpen} onClose={() => setIsConsoleOpen(false)} />
     </div>

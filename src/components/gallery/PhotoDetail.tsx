@@ -1,8 +1,8 @@
 import { Button } from '../ui/button';
 import { X, Sparkles, ArrowRight } from 'lucide-react';
 import { LazyImage } from '../shared/LazyImage';
-import { categoryPhotoPrompts } from './categoryPhotoPrompts';
-import { categoryMasonryImages } from './categoryMasonryData';
+import { categoryPhotoPrompts } from '../categoryPhotoPrompts';
+import { categoryMasonryImages } from '../categoryMasonryData';
 
 interface PhotoDetailPageProps {
   photoUrl: string;
