@@ -1,18 +1,18 @@
-import image_78561249bdabb10db45f2e19c3785798769f88cb from '../../assets/78561249bdabb10db45f2e19c3785798769f88cb.png';
-import image_06c17fd60b109f44663983174a9fcffb6a7e8ca4 from '../../assets/06c17fd60b109f44663983174a9fcffb6a7e8ca4.png';
 import { useState, useEffect } from 'react';
 import { motion, useMotionValue, PanInfo } from 'framer-motion';
 import { Heart, Upload, Sparkles, Grid3x3, Bookmark, ThumbsUp, MessageCircle } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import phoneImage from '../../assets/16b71f196debb8a02e63c336078a93f05b9711fe.png';
-import instagramLogo from '../../assets/a3d62fe320695b906cb3bc1f68f9228f8d43ed2c.png';
-import linkedinLogo from '../../assets/b45cb94262e9dc3e4f49d97475ceb9570d781443.png';
-import pinterestLogo from '../../assets/5d083b8c046522abf88456dc17431671c7a94f0d.png';
-import instagramPhoto from '../../assets/7908cc95b51e4da62111a52533d59e9ff10cea21.png';
-import linkedinPhoto from '../../assets/889909b48ee021025e71d69b390ad6902f141398.png';
-import aiProcessingPhoto from '../../assets/9fbd94f84c686f8a660346c0a5b33d5f11f2713f.png';
-import selfie2 from '../../assets/2c508c4e08485a8f3e97314d1e81a5ddf454e5a1.png';
-import aiResult from '../../assets/122dcd2ebe2b9d58e158d5aa006fd43d2ea55ea8.png';
+
+const phoneImage = '/steps/step-upload.svg';
+const aiProcessingPhoto = '/steps/step-processing.svg';
+const aiResult = '/steps/ai-result.svg';
+const instagramLogo = '/steps/logo-instagram.svg';
+const linkedinLogo = '/steps/logo-linkedin.svg';
+const pinterestLogo = '/steps/logo-pinterest.svg';
+const instagramPhoto = '/steps/platform-instagram.svg';
+const linkedinPhoto = '/steps/platform-linkedin.svg';
+const datingPhoto = '/steps/platform-dating.svg';
+const pinterestPhoto = '/steps/platform-pinterest.svg';
 
 interface ColorScheme {
   primary: string;
@@ -78,14 +78,14 @@ export function CategoryHowItWorks({ colorScheme }: CategoryHowItWorksProps) {
       ),
       badge: (
         <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg">
-          <img src={image_06c17fd60b109f44663983174a9fcffb6a7e8ca4} alt="LinkedIn" className="w-5 h-5" />
+          <img src={linkedinLogo} alt="LinkedIn" className="w-5 h-5" />
         </div>
       )
     },
     {
       name: "Dating Apps",
       logo: null,
-      image: selfie2,
+      image: datingPhoto,
       title: "Sophie, 28",
       subtitle: "2 km away",
       bgGradient: "from-pink-500/20 to-rose-500/10",
@@ -123,7 +123,7 @@ export function CategoryHowItWorks({ colorScheme }: CategoryHowItWorksProps) {
       ),
       badge: (
         <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg">
-          <img src={image_78561249bdabb10db45f2e19c3785798769f88cb} alt="Pinterest" className="w-5 h-5" />
+          <img src={pinterestLogo} alt="Pinterest" className="w-5 h-5" />
         </div>
       )
     },

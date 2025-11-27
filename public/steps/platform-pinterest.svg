@@ -1,0 +1,20 @@
+<svg width="420" height="520" viewBox="0 0 420 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="60" y1="30" x2="360" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FEE2E2" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#B91C1C" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect width="420" height="520" rx="28" fill="#140A1B"/>
+  <rect x="22" y="22" width="376" height="476" rx="26" fill="url(#bg)"/>
+  <rect x="64" y="80" width="292" height="160" rx="24" fill="#FDF2F2" stroke="#EF4444" stroke-width="3"/>
+  <rect x="64" y="260" width="292" height="160" rx="24" fill="#FDF2F2" stroke="#F87171" stroke-opacity="0.7" stroke-width="3"/>
+  <rect x="84" y="100" width="120" height="120" rx="22" fill="#FCA5A5" fill-opacity="0.5"/>
+  <rect x="220" y="100" width="116" height="120" rx="22" fill="#FECACA" fill-opacity="0.7"/>
+  <rect x="84" y="280" width="116" height="120" rx="22" fill="#FECACA" fill-opacity="0.7"/>
+  <rect x="220" y="280" width="120" height="120" rx="22" fill="#FCA5A5" fill-opacity="0.5"/>
+  <rect x="130" y="442" width="160" height="36" rx="12" fill="#B91C1C"/>
+  <text x="210" y="468" text-anchor="middle" fill="white" font-family="'Inter', sans-serif" font-size="16" font-weight="700">Save inspiration</text>
+  <circle cx="342" cy="72" r="26" fill="#B91C1C" stroke="white" stroke-width="4"/>
+  <text x="342" y="80" text-anchor="middle" font-family="'Inter', sans-serif" font-size="28" font-weight="800" fill="white">P</text>
+</svg>
