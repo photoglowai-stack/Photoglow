@@ -1,14 +1,19 @@
+import { useMemo } from 'react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ExploreAIModelsPage } from './ExploreModels';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Sparkles, ArrowLeft } from 'lucide-react';
 
 interface AIPhotoGeneratorProps {
   onBack?: () => void;
   selectedPackage?: string;
+  onSelectModel?: (modelId: string) => void;
 }
 
-// Lightweight fallback implementation to keep the build working
-export function AIPhotoGenerator({ onBack, selectedPackage }: AIPhotoGeneratorProps) {
+const placeholderEnabled =
+  typeof import.meta !== 'undefined' && import.meta.env?.VITE_PLACEHOLDER_MODE === 'true';
+
+function PlaceholderView({ onBack, selectedPackage }: Pick<AIPhotoGeneratorProps, 'onBack' | 'selectedPackage'>) {
   return (
     <div className="min-h-screen bg-black text-white px-6 py-10">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -45,6 +50,22 @@ export function AIPhotoGenerator({ onBack, selectedPackage }: AIPhotoGeneratorPr
         </Card>
       </div>
     </div>
+  );
+}
+
+export function AIPhotoGenerator({ onBack, selectedPackage, onSelectModel }: AIPhotoGeneratorProps) {
+  const backHandler = useMemo(() => onBack ?? (() => {}), [onBack]);
+  const selectHandler = useMemo(() => onSelectModel ?? (() => {}), [onSelectModel]);
+
+  if (placeholderEnabled) {
+    return <PlaceholderView onBack={onBack} selectedPackage={selectedPackage} />;
+  }
+
+  return (
+    <ExploreAIModelsPage
+      onBack={backHandler}
+      onModelSelect={selectHandler}
+    />
   );
 }
 
