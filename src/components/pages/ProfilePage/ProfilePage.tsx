@@ -32,6 +32,7 @@ import { Header } from '../../shared/Header';
 import { fetchWithTimeout, safeJsonParse, logError, shouldShowError } from '../../../utils/error-handler';
 import { getCurrentUserCredits, addCredits, getCredits } from '../../../utils/credits-client';
 import { VERCEL_API_BASE, API_ENDPOINTS } from '../../../utils/config';
+import { apiRequest } from '../../../utils/api-client';
 import type { UserProfile, GeneratedPhoto, ProfilePageProps } from './ProfilePage.types';
 
 /**
@@ -257,22 +258,11 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
     try {
       setIsLoadingCredits(true);
       
-      const res = await fetch(`${VERCEL_API_BASE}/api/credits`, {
+      const data = await apiRequest<{ credits: number }>(API_ENDPOINTS.credits, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify({ op: 'reset' })
       });
-      
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Erreur lors de la réinitialisation');
-      }
-      
-      const data = await res.json();
-      setCredits(data.credits);
+      setCredits(data.credits ?? 0);
       
       toast.success('Crédits réinitialisés', {
         description: 'Votre solde a été remis à 0'

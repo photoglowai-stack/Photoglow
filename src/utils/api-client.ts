@@ -5,9 +5,67 @@
  */
 
 import { supabase } from './supabase/client';
-import { VERCEL_API_BASE } from './config';
+import { API_ENDPOINTS, VERCEL_API_BASE } from './config';
 
-const API_BASE = VERCEL_API_BASE;
+const API_BASE = VERCEL_API_BASE || '';
+
+type ApiRequestInit = RequestInit & { auth?: boolean };
+
+async function getAuthHeader(authEnabled: boolean) {
+  if (!authEnabled) return {};
+
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+
+  if (!token) {
+    throw new Error('Authentication required. Please sign in to continue.');
+  }
+
+  return { Authorization: `Bearer ${token}` };
+}
+
+export async function apiRequest<T>(path: string, init: ApiRequestInit = {}): Promise<T> {
+  const { auth = true, headers, body, ...rest } = init;
+  const authHeader = await getAuthHeader(auth);
+  const mergedHeaders = new Headers(headers || {});
+
+  // Only set content-type automatically when sending JSON bodies
+  if (body && !(body instanceof FormData)) {
+    mergedHeaders.set('Content-Type', 'application/json');
+  }
+
+  Object.entries(authHeader).forEach(([key, value]) => {
+    mergedHeaders.set(key, value);
+  });
+
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...rest,
+    body,
+    headers: mergedHeaders
+  });
+
+  const text = await response.text();
+  let data: any = null;
+
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch (error) {
+      console.error('[apiRequest] Failed to parse JSON response', error);
+    }
+  }
+
+  if (!response.ok) {
+    const errorMessage =
+      data?.error || data?.message || `Request failed with status ${response.status}`;
+
+    const error: any = new Error(errorMessage);
+    error.status = response.status;
+    throw error;
+  }
+
+  return data as T;
+}
 
 // ============================================
 // AUTHENTICATION
@@ -65,68 +123,12 @@ export async function getUserId(): Promise<string> {
  * Fetch user credits balance
  */
 export async function fetchCredits(): Promise<number> {
-  // Guest mode: return demo credits
-  const guestUser = localStorage.getItem('photoglow_demo_user');
-  if (guestUser) {
-    const storedCredits = localStorage.getItem('photoglow_guest_credits');
-    return storedCredits ? parseInt(storedCredits) : 100;
-  }
-  
-  // Check if user is authenticated before fetching
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) {
-    // User not authenticated - return 0 silently (not an error)
-    return 0;
-  }
-  
-  const userId = session.user.id;
-  
   try {
-    // Use Supabase Function (has proper env variables)
-    const { projectId, publicAnonKey } = await import('./supabase/info');
-    const url = `https://${projectId}.supabase.co/functions/v1/make-server-ab844084/credits?user_id=${userId}`;
-    
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${publicAnonKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    // Check if response is JSON (not HTML error page)
-    const contentType = res.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('[fetchCredits] API returned non-JSON response (likely 500 error)');
-      throw new Error('Credits API is unavailable (server error)');
-    }
-    
-    const data = await res.json();
-    
-    if (!res.ok) {
-      // Only log error if it's not an expected auth error
-      if (res.status !== 401 && res.status !== 403) {
-        console.error('[fetchCredits] Error:', data.error || 'Failed to fetch credits');
-      }
-      throw new Error(data.error || 'Failed to fetch credits');
-    }
-    
+    const data = await apiRequest<{ credits: number }>(API_ENDPOINTS.credits);
     return data.credits ?? 0;
   } catch (error: any) {
-    // Silent fallback if user is not authenticated (expected behavior)
-    if (error.message?.includes('sign in') || 
-        error.message?.includes('unauthorized') || 
-        error.message?.includes('Invalid or expired token')) {
-      return 0;
-    }
-    
-    // Only log unexpected errors
-    if (!error.message?.includes('Credits API is unavailable')) {
-      console.error('[fetchCredits] Unexpected error:', error.message);
-    }
-    
-    // Fallback: return 0 instead of throwing to avoid breaking the UI
-    return 0;
+    console.error('[fetchCredits] Unexpected error:', error.message || error);
+    throw error;
   }
 }
 
@@ -134,40 +136,13 @@ export async function fetchCredits(): Promise<number> {
  * Debit credits from user account
  */
 export async function debitCredits(amount: number): Promise<number> {
-  // Guest mode: simulate credit debit
-  const guestUser = localStorage.getItem('photoglow_demo_user');
-  if (guestUser) {
-    const storedCredits = localStorage.getItem('photoglow_guest_credits');
-    const currentCredits = storedCredits ? parseInt(storedCredits) : 100;
-    
-    if (currentCredits < amount) {
-      throw new Error('Not enough credits');
-    }
-    
-    const newCredits = currentCredits - amount;
-    localStorage.setItem('photoglow_guest_credits', newCredits.toString());
-    return newCredits;
-  }
-  
-  const userId = await getUserId();
-  
   try {
-    // Use Supabase RPC function debit_credits
-    const { error } = await supabase.rpc('debit_credits', {
-      p_user_id: userId,
-      p_amount: amount
+    const data = await apiRequest<{ credits: number }>(API_ENDPOINTS.credits, {
+      method: 'POST',
+      body: JSON.stringify({ op: 'debit', amount })
     });
-    
-    if (error) {
-      if (error.message?.includes('Insufficient')) {
-        throw new Error('Not enough credits');
-      }
-      throw new Error(error.message || 'Failed to debit credits');
-    }
-    
-    // Fetch new balance
-    const newBalance = await fetchCredits();
-    
+
+    const newBalance = data.credits ?? 0;
     console.log('[debitCredits] ✅ Credits debited:', amount, '→ Remaining:', newBalance);
     return newBalance;
   } catch (error: any) {

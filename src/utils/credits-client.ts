@@ -3,10 +3,9 @@
  * Uses Supabase Edge Functions server instead of Vercel API
  */
 
+import { apiRequest } from './api-client';
+import { API_ENDPOINTS } from './config';
 import { supabase } from './supabase/client';
-import { projectId, publicAnonKey } from './supabase/info';
-
-const SUPABASE_FUNCTION_URL = `https://${projectId}.supabase.co/functions/v1/make-server-ab844084`;
 
 export interface CreditsResponse {
   credits: number;
@@ -23,42 +22,15 @@ export interface DebitCreditsResponse {
 /**
  * Get user credits balance
  */
-export async function getCredits(userId: string): Promise<CreditsResponse> {
+export async function getCredits(): Promise<CreditsResponse> {
   try {
-    const response = await fetch(
-      `${SUPABASE_FUNCTION_URL}/credits?user_id=${userId}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-      
-      // Only log non-auth errors
-      if (response.status !== 401 && response.status !== 403) {
-        console.error('[getCredits] Error:', errorData.error || `HTTP ${response.status}`);
-      }
-      
-      throw new Error(errorData.error || `HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await apiRequest<{ credits: number }>(API_ENDPOINTS.credits);
     return {
       credits: data.credits ?? 0,
       success: true
     };
   } catch (error: any) {
-    // Silently handle auth errors (expected when not logged in)
-    if (!error.message?.includes('Invalid or expired token') && 
-        !error.message?.includes('401') && 
-        !error.message?.includes('403')) {
-      console.error('[getCredits] Unexpected error:', error.message);
-    }
-    
+    console.error('[getCredits] Unexpected error:', error.message);
     return {
       credits: 0,
       success: false,
@@ -71,36 +43,24 @@ export async function getCredits(userId: string): Promise<CreditsResponse> {
  * Debit credits from user account
  */
 export async function debitCredits(
-  userId: string, 
+  userId: string,
   amount: number = 1,
   reason: string = 'generation'
 ): Promise<DebitCreditsResponse> {
   try {
-    const response = await fetch(
-      `${SUPABASE_FUNCTION_URL}/credits/debit`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          user_id: userId,
-          amount,
-          reason
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || `HTTP ${response.status}`);
-    }
+    const data = await apiRequest<DebitCreditsResponse>(API_ENDPOINTS.credits, {
+      method: 'POST',
+      body: JSON.stringify({
+        op: 'debit',
+        user_id: userId,
+        amount,
+        reason
+      })
+    });
 
     return {
       success: data.success ?? true,
-      new_balance: data.new_balance
+      new_balance: data.new_balance ?? data.credits
     };
   } catch (error: any) {
     console.error('[debitCredits] Error:', error);
@@ -120,31 +80,19 @@ export async function addCredits(
   reason: string = 'purchase'
 ): Promise<DebitCreditsResponse> {
   try {
-    const response = await fetch(
-      `${SUPABASE_FUNCTION_URL}/credits/add`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          user_id: userId,
-          amount,
-          reason
-        })
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || `HTTP ${response.status}`);
-    }
+    const data = await apiRequest<DebitCreditsResponse>(API_ENDPOINTS.credits, {
+      method: 'POST',
+      body: JSON.stringify({
+        op: 'credit',
+        user_id: userId,
+        amount,
+        reason
+      })
+    });
 
     return {
       success: data.success ?? true,
-      new_balance: data.new_balance
+      new_balance: data.new_balance ?? data.credits
     };
   } catch (error: any) {
     console.error('[addCredits] Error:', error);
@@ -172,15 +120,5 @@ export async function getCurrentUserId(): Promise<string | null> {
  * Get credits for current user
  */
 export async function getCurrentUserCredits(): Promise<CreditsResponse> {
-  const userId = await getCurrentUserId();
-  
-  if (!userId) {
-    return {
-      credits: 0,
-      success: false,
-      error: 'Not authenticated'
-    };
-  }
-
-  return getCredits(userId);
+  return getCredits();
 }

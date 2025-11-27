@@ -15,7 +15,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
 import { supabase } from '../../utils/supabase/client';
-import { VERCEL_API_BASE, API_ENDPOINTS } from '../../utils/config';
+import { API_ENDPOINTS } from '../../utils/config';
+import { apiRequest } from '../../utils/api-client';
 
 // ============================================
 // TYPES
@@ -70,24 +71,11 @@ export function CreditsDashboard({ onBack }: { onBack: () => void }) {
     if (!userId) return;
 
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-ab844084/credits?user_id=${userId}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`
-          }
-        }
-      );
-
-      if (!response.ok) {
-        console.error('Failed to fetch credits:', response.status);
-        return;
-      }
-
-      const data = await response.json();
+      const data = await apiRequest<{ credits: number }>(API_ENDPOINTS.credits);
       setCredits(data.credits ?? 0);
     } catch (error) {
       console.error('Error fetching credits:', error);
+      toast.error('Failed to fetch credits for admin dashboard');
     }
   };
 
