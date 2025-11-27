@@ -14,8 +14,8 @@ import {
   Zap
 } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
-import { supabase } from '../utils/supabase/client';
-import { VERCEL_API_BASE, API_ENDPOINTS } from '../utils/config';
+import { supabase } from '../../utils/supabase/client';
+import { VERCEL_API_BASE, API_ENDPOINTS } from '../../utils/config';
 
 // ============================================
 // TYPES

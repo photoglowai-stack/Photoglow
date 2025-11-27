@@ -1,7 +1,7 @@
 import { Card } from '../ui/card';
 import { Star } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { categoryPagesConfig } from './categoryPagesConfig';
+import { categoryPagesConfig } from '../categoryPagesConfig';
 
 interface CategoryTestimonialsProps {
   categoryId: string;

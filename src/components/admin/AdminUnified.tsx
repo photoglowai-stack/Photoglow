@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Header } from './Header';
+import { Header } from '../shared/Header';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -28,9 +28,9 @@ import { AdminGenerateTab } from './AdminGenerateTab';
 import { AdminGenerateIdeasSimple } from './AdminGenerateIdeasSimple';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { toast } from 'sonner@2.0.3';
-import { supabase } from '../utils/supabase/client';
-import { API_ENDPOINTS } from '../utils/config';
-import { projectId } from '../utils/supabase/info';
+import { supabase } from '../../utils/supabase/client';
+import { API_ENDPOINTS } from '../../utils/config';
+import { projectId } from '../../utils/supabase/info';
 
 type TabType = 'generate' | 'gallery' | 'health' | 'preview-model' | 'categories';
 

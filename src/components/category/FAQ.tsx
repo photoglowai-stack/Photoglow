@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { categoryPagesConfig } from './categoryPagesConfig';
+import { categoryPagesConfig } from '../categoryPagesConfig';
 
 interface CategoryFAQProps {
   categoryId: string;

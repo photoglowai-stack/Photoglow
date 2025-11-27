@@ -5,9 +5,9 @@ import { Badge } from '../ui/badge';
 import { SocialProof } from '../landing/SocialProof';
 import { HowItWorks } from './HowItWorks';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { CategoryFAQ } from './CategoryFAQ';
-import { CategoryTestimonials } from './CategoryTestimonials';
-import { categoryPagesConfig, CategoryPageConfig } from './categoryPagesConfig';
+import { CategoryFAQ } from './FAQ';
+import { CategoryTestimonials } from './Testimonials';
+import { categoryPagesConfig, CategoryPageConfig } from '../categoryPagesConfig';
 
 interface CategoryUniversalPageProps {
   categoryId: string;

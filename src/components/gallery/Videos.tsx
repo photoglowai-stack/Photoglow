@@ -13,7 +13,7 @@ import {
   Clock
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { projectId } from '../utils/supabase/info';
+import { projectId } from '../../utils/supabase/info';
 
 interface VideoItem {
   id: string;

@@ -19,7 +19,7 @@ import {
   Crown
 } from 'lucide-react';
 import { LazyImage } from '../shared/LazyImage';
-import { Header } from './Header';
+import { Header } from '../shared/Header';
 
 interface TinderPaymentPageProps {
   onPurchase: (packageId: string) => void;

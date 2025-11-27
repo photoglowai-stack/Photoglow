@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { supabase } from '../utils/supabase/client';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { supabase } from '../../utils/supabase/client';
+import { projectId, publicAnonKey } from '../../utils/supabase/info';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { 
@@ -20,7 +20,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
-import { VERCEL_API_BASE, API_ENDPOINTS } from '../utils/config';
+import { VERCEL_API_BASE, API_ENDPOINTS } from '../../utils/config';
 
 interface TestResult {
   name: string;

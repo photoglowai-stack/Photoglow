@@ -19,8 +19,8 @@ import {
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Card } from '../ui/card';
-import { categoryPagesConfig } from './categoryPagesConfig';
-import { BeforeAfterTransformation } from './BeforeAfterTransformation';
+import { categoryPagesConfig } from '../categoryPagesConfig';
+import { BeforeAfterTransformation } from '../landing/BeforeAfter';
 
 interface UniversalCategoryPageProps {
   categoryId: string;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { supabase } from "../utils/supabase/client";
+import { supabase } from "../../utils/supabase/client";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
@@ -7,7 +7,7 @@ import { Card } from "./ui/card";
 import { Loader2, Upload, Sparkles, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { ReplicateStatusBanner, useReplicateStatus } from "./ReplicateStatusBanner";
-import { API_ENDPOINTS } from "../utils/config";
+import { API_ENDPOINTS } from "../../utils/config";
 
 type GenItem = { 
   id: string; 
