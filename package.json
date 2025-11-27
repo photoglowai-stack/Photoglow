@@ -43,7 +43,7 @@
             "hono": "^4",
             "input-otp": "*",
             "lucide-react": "*",
-            "motion": "*",
+            "framer-motion": "^12.23.24",
             "next": "*",
             "next-themes": "*",
             "path": "*",

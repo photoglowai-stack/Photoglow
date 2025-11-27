@@ -1,7 +1,7 @@
 import image_78561249bdabb10db45f2e19c3785798769f88cb from '../../assets/78561249bdabb10db45f2e19c3785798769f88cb.png';
 import image_06c17fd60b109f44663983174a9fcffb6a7e8ca4 from '../../assets/06c17fd60b109f44663983174a9fcffb6a7e8ca4.png';
 import { useState, useEffect } from 'react';
-import { motion, useMotionValue, PanInfo } from 'motion/react';
+import { motion, useMotionValue, PanInfo } from 'framer-motion';
 import { Heart, Upload, Sparkles, Grid3x3, Bookmark, ThumbsUp, MessageCircle } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import phoneImage from '../../assets/16b71f196debb8a02e63c336078a93f05b9711fe.png';
