@@ -14,6 +14,7 @@ import { BeforeAfterTransformation } from "./components/landing/BeforeAfter";
 import { AuthModal } from "./components/auth/Modal";
 import { supabase } from "./utils/supabase/client";
 import { Toaster } from "./components/ui/sonner";
+import { LandingGallery } from "./components/landing/LandingGallery";
 
 // Lazy load heavy components to prevent timeout
 const CategoryHowItWorks = lazy(() => import("./components/category/HowItWorks").then(m => ({ default: m.CategoryHowItWorks })));
@@ -962,6 +963,7 @@ export default function App() {
           <ComparisonSection />
           <BeforeAfterTransformation onStartTransformation={handleShowPricing} />
           <Features />
+          <LandingGallery />
           <SocialProof />
           <FAQ />
           <CategoryShowcase onCategoryClick={handleCategoryShowcaseClick} />

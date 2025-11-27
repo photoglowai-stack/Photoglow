@@ -29,11 +29,12 @@ import {
 import { toast } from 'sonner@2.0.3';
 import { supabase } from '../../../utils/supabase/client';
 import { Header } from '../../shared/Header';
-import { fetchWithTimeout, safeJsonParse, logError, shouldShowError } from '../../../utils/error-handler';
+import { logError, shouldShowError } from '../../../utils/error-handler';
 import { getCurrentUserCredits, addCredits, getCredits } from '../../../utils/credits-client';
-import { VERCEL_API_BASE, API_ENDPOINTS } from '../../../utils/config';
+import { API_ENDPOINTS } from '../../../utils/config';
 import { apiRequest } from '../../../utils/api-client';
 import type { UserProfile, GeneratedPhoto, ProfilePageProps } from './ProfilePage.types';
+import { useUserPhotos } from '../../../hooks/useUserPhotos';
 
 /**
  * Page de profil utilisateur PhotoGlow
@@ -64,7 +65,7 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
   const [session, setSession] = useState<any>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [credits, setCredits] = useState<number | null>(null);
-  const [photos, setPhotos] = useState<GeneratedPhoto[]>([]);
+  const { photos, isLoading: isLoadingPhotos, error: photosError, reload: reloadPhotos } = useUserPhotos();
   
   // ============================================
   // STATE - Loading & Error States
@@ -72,7 +73,6 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
   
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingCredits, setIsLoadingCredits] = useState(false);
-  const [isLoadingPhotos, setIsLoadingPhotos] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // ============================================
@@ -114,7 +114,7 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
       // Load credits and photos in parallel
       await Promise.all([
         loadCredits(data.session.access_token),
-        loadPhotos(data.session.access_token)
+        reloadPhotos()
       ]);
       
     } catch (err: any) {
@@ -167,41 +167,11 @@ export function ProfilePage({ onBack }: ProfilePageProps) {
    * Charge les photos générées par l'utilisateur
    * @param token - Token d'authentification
    */
-  async function loadPhotos(token: string) {
-    try {
-      setIsLoadingPhotos(true);
-      
-      // Photos endpoint - use Vercel API base if needed, or skip if not implemented
-      const res = await fetchWithTimeout(`${VERCEL_API_BASE}/api/photos`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        timeout: 10000
-      });
-      
-      if (!res.ok) {
-        // Si l'endpoint n'existe pas encore, on ne fait pas d'erreur
-        if (res.status === 404) {
-          console.log('Photos endpoint not found yet - using empty array');
-          setPhotos([]);
-          return;
-        }
-        const errorData = await safeJsonParse(res, { error: 'Unknown error' });
-        throw new Error(errorData.error || 'Erreur lors de la récupération des photos');
-      }
-      
-      const data = await safeJsonParse(res, { photos: [] });
-      setPhotos(data.photos || []);
-      
-    } catch (err: any) {
-      logError('loadPhotos', err);
-      setPhotos([]);
-    } finally {
-      setIsLoadingPhotos(false);
+  useEffect(() => {
+    if (photosError) {
+      logError('loadPhotos', photosError);
     }
-  }
+  }, [photosError]);
 
   // ============================================
   // ACTIONS - Credit Management
