@@ -5,7 +5,7 @@ import { Badge } from '../ui/badge';
 import { SocialProof } from '../landing/SocialProof';
 import { HowItWorks } from './HowItWorks';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { CategoryFAQ } from './FAQ';
+import { FAQ } from './FAQ';
 import { CategoryTestimonials } from './Testimonials';
 import { categoryPagesConfig, CategoryPageConfig } from '../categoryPagesConfig';
 
@@ -300,7 +300,7 @@ export const CategoryUniversalPage = memo(function CategoryUniversalPage({
       {/* ========================================
           FAQ - Category Specific
           ======================================== */}
-      <CategoryFAQ categoryId={categoryId} accentColor={colors.primary} />
+      <FAQ categoryId={categoryId} accentColor={colors.primary} />
 
       {/* ========================================
           FINAL CTA SECTION
