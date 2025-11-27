@@ -1,0 +1,28 @@
+<svg width="640" height="640" viewBox="0 0 640 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="50" x2="560" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1E1B4B"/>
+      <stop offset="1" stop-color="#9333EA"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#A855F7"/>
+      <stop offset="1" stop-color="#EC4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" rx="48" fill="url(#bg)"/>
+  <rect x="160" y="90" width="320" height="520" rx="36" fill="#0F172A" stroke="#A855F7" stroke-opacity="0.45" stroke-width="6"/>
+  <rect x="210" y="140" width="220" height="420" rx="28" fill="#111827" stroke="#6366F1" stroke-opacity="0.3" stroke-width="3"/>
+  <rect x="230" y="165" width="80" height="80" rx="16" fill="#0EA5E9" fill-opacity="0.2" stroke="#38BDF8" stroke-width="4"/>
+  <rect x="330" y="165" width="80" height="80" rx="16" fill="#FACC15" fill-opacity="0.2" stroke="#FCD34D" stroke-width="4"/>
+  <rect x="230" y="265" width="80" height="80" rx="16" fill="#22C55E" fill-opacity="0.2" stroke="#4ADE80" stroke-width="4"/>
+  <rect x="330" y="265" width="80" height="80" rx="16" fill="#F97316" fill-opacity="0.2" stroke="#FB923C" stroke-width="4"/>
+  <rect x="230" y="365" width="180" height="120" rx="18" fill="#0EA5E9" fill-opacity="0.1" stroke="#22D3EE" stroke-width="3"/>
+  <rect x="260" y="395" width="120" height="60" rx="14" fill="url(#accent)" fill-opacity="0.2"/>
+  <circle cx="320" cy="515" r="24" fill="#10B981"/>
+  <path d="M320 500v24" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <path d="M308 512h24" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <text x="320" y="320" text-anchor="middle" fill="#E5E7EB" font-family="'Inter', sans-serif" font-size="26" font-weight="700">Upload your photos</text>
+  <text x="320" y="350" text-anchor="middle" fill="#CBD5E1" font-family="'Inter', sans-serif" font-size="18">Drag & drop selfies or portraits</text>
+  <circle cx="200" cy="120" r="18" fill="#22D3EE"/>
+  <circle cx="440" cy="120" r="18" fill="#F472B6"/>
+</svg>
