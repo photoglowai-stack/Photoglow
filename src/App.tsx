@@ -642,6 +642,7 @@ export default function App() {
           <AIPhotoGenerator
             onBack={handleBackToLandingFromHeadshots}
             selectedPackage={selectedPackage}
+            onSelectModel={handlePhotoGlowPurposeSelect}
           />
         </Suspense>
         {/* Authentication Modal - Always rendered */}
