@@ -4,13 +4,17 @@ import { useState, useEffect } from 'react';
 import { motion, useMotionValue, PanInfo } from 'framer-motion';
 import { Heart, Upload, Sparkles, Grid3x3, Bookmark, ThumbsUp, MessageCircle } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import phoneImage from '../../assets/16b71f196debb8a02e63c336078a93f05b9711fe.png';
 import instagramLogo from '../../assets/a3d62fe320695b906cb3bc1f68f9228f8d43ed2c.png';
 import linkedinLogo from '../../assets/b45cb94262e9dc3e4f49d97475ceb9570d781443.png';
 import pinterestLogo from '../../assets/5d083b8c046522abf88456dc17431671c7a94f0d.png';
 import instagramPhoto from '../../assets/7908cc95b51e4da62111a52533d59e9ff10cea21.png';
 import linkedinPhoto from '../../assets/889909b48ee021025e71d69b390ad6902f141398.png';
 import aiProcessingPhoto from '../../assets/9fbd94f84c686f8a660346c0a5b33d5f11f2713f.png';
+import selfie1 from '../../assets/0add018c10f3889f2c712223ec4a093b5ddf753a.png';
+import selfie2 from '../../assets/2c508c4e08485a8f3e97314d1e81a5ddf454e5a1.png';
+import selfie3 from '../../assets/0690a5805cd67144f4f9f4968e8da6dc518fa63d.png';
+import selfie4 from '../../assets/e5d9a2a1cdcb17f07c69550c0cd20071344f5cec.png';
+import aiResult from '../../assets/122dcd2ebe2b9d58e158d5aa006fd43d2ea55ea8.png';
 
 interface ColorScheme {
   primary: string;
@@ -83,7 +87,7 @@ export function CategoryHowItWorks({ colorScheme }: CategoryHowItWorksProps) {
     {
       name: "Dating Apps",
       logo: null,
-      image: "https://images.unsplash.com/photo-1618842688917-0540b01cb7fc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMHdvbWFuJTIwcmVzdGF1cmFudHxlbnwxfHx8fDE3NjAwMjE3Mzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      image: selfie2,
       title: "Sophie, 28",
       subtitle: "2 km away",
       bgGradient: "from-pink-500/20 to-rose-500/10",
@@ -108,7 +112,7 @@ export function CategoryHowItWorks({ colorScheme }: CategoryHowItWorksProps) {
     {
       name: "Pinterest",
       logo: pinterestLogo,
-      image: "https://images.unsplash.com/photo-1658688976101-e19db9ab35d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGJlYWNoJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzYwMDA4NDI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      image: aiResult,
       title: "Summer Style Inspiration",
       subtitle: "Fashion & Lifestyle • 2.4K saves",
       bgGradient: "from-[#E60023]/20 to-[#BD081C]/10",
@@ -167,6 +171,8 @@ export function CategoryHowItWorks({ colorScheme }: CategoryHowItWorksProps) {
     }
   };
 
+  const uploadGridPhotos = [selfie1, selfie2, selfie3, selfie4];
+
   const steps = [
     {
       number: 1,
@@ -175,12 +181,17 @@ export function CategoryHowItWorks({ colorScheme }: CategoryHowItWorksProps) {
       icon: Upload,
       visual: (
         <div className="absolute inset-0 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-[180px]">
-            <img 
-              src={phoneImage} 
-              alt="Phone gallery"
-              className="w-full h-auto rounded-2xl"
-            />
+          <div className="grid grid-cols-2 gap-3 w-full max-w-[220px]">
+            {uploadGridPhotos.map((photo, idx) => (
+              <div key={idx} className="relative w-full h-24 rounded-xl overflow-hidden shadow-lg">
+                <ImageWithFallback
+                  src={photo}
+                  alt="User upload example"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+              </div>
+            ))}
           </div>
         </div>
       )
@@ -227,6 +238,14 @@ export function CategoryHowItWorks({ colorScheme }: CategoryHowItWorksProps) {
                   />
                 </div>
               </div>
+            </div>
+
+            <div className="absolute top-2 right-2 w-14 h-14 rounded-lg overflow-hidden border border-white/30 shadow-lg">
+              <ImageWithFallback
+                src={aiResult}
+                alt="Enhanced preview"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <div className={`absolute top-2 left-2 bg-gradient-to-r from-${colors.primary} to-${colors.secondary} text-white px-2 py-1 rounded-full text-xs flex items-center gap-1 shadow-lg`}>
