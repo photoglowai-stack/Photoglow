@@ -25,6 +25,18 @@
         {
             "source": "/v1/ideas/:path*",
             "destination": "/api/v1/ideas/:path*"
+        },
+        {
+            "source": "/api/system",
+            "destination": "/api/system.js"
+        },
+        {
+            "source": "/api/presets",
+            "destination": "/api/system.js"
+        },
+        {
+            "source": "/api/credits",
+            "destination": "/api/system.js"
         }
     ],
     "headers": [
