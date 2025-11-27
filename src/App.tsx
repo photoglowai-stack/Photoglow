@@ -194,7 +194,7 @@ export default function App() {
 
   // All "Generate" and "Create" buttons now redirect to pricing (with auth check)
   const handleGetStarted = () => {
-    checkAuthAndNavigate("pricing");
+    setCurrentState("ai-photo-generator");
   };
 
   const handlePurchase = (packageId: string) => {
@@ -212,8 +212,15 @@ export default function App() {
   };
 
   const handleShowPhotoGlow = () => {
-    // Redirect to pricing instead of form
-    checkAuthAndNavigate("pricing");
+    setCurrentState("ai-photo-generator");
+  };
+
+  const handleShowCategories = () => {
+    setCurrentState("ai-headshots");
+  };
+
+  const handleShowExamples = () => {
+    setCurrentState("ai-headshots-examples");
   };
 
   const handleShowIdeas = () => {
@@ -372,7 +379,7 @@ export default function App() {
     const categoryIdMap: Record<string, string> = {
       'professional': 'ai-headshots',
       'linkedin-headshots': 'ai-headshots',
-      'tinder': 'ai-dating',
+      'tinder': 'ai-dating-photos',
       'instagram': 'ai-selfie',
       'model': 'ai-model-photo',
       'glamour': 'ai-model-photo',
@@ -385,12 +392,36 @@ export default function App() {
       'travel': 'ai-lifestyle-travel',
       'corporate-team': 'ai-headshots',
       'portrait': 'ai-portrait',
-      'dating': 'ai-dating',
+      'dating': 'ai-dating-photos',
     };
 
     const mappedId = categoryIdMap[categoryId] || categoryId;
     setUniversalCategoryId(mappedId);
     setCurrentState('category-universal');
+  };
+
+  const handleShowcaseExamples = (categoryId: string) => {
+    const categoryIdMap: Record<string, AppState> = {
+      'professional': 'ai-headshots',
+      'linkedin-headshots': 'ai-headshots',
+      'tinder': 'ai-dating-photos',
+      'instagram': 'ai-selfie',
+      'model': 'ai-model-photo',
+      'glamour': 'ai-model-photo',
+      'realistic': 'ai-realistic-photo',
+      'ai-influencer': 'ai-selfie',
+      'luxury-lifestyle': 'ai-model-photo',
+      'selfie': 'ai-selfie',
+      'beach-bikini': 'ai-fitness-bikini',
+      'fitness': 'ai-fitness-photos',
+      'travel': 'ai-lifestyle-travel',
+      'corporate-team': 'ai-headshots',
+      'portrait': 'ai-portrait',
+      'dating': 'ai-dating-photos',
+    };
+
+    const mappedId = categoryIdMap[categoryId] || 'ai-headshots';
+    handleViewExamples(mappedId as AppState);
   };
 
   // Functions to handle navigation to examples pages
@@ -400,6 +431,7 @@ export default function App() {
       'ai-model-photo': 'ai-model-photo-examples',
       'ai-dating-photos': 'ai-dating-photos-examples',
       'ai-fitness-photos': 'ai-fitness-photos-examples',
+      'ai-fitness-bikini': 'ai-fitness-photos-examples',
       'ai-selfie': 'ai-selfie-examples',
       'ai-portrait': 'ai-portrait-examples',
       'ai-realistic-photo': 'ai-realistic-photo-examples',
@@ -940,6 +972,8 @@ export default function App() {
         <Header
           onShowPricing={handleShowPricing}
           onShowPhotoGlow={handleShowPhotoGlow}
+          onShowCategories={handleShowCategories}
+          onShowExamples={handleShowExamples}
           onShowIdeas={handleShowIdeas}
           onShowAuth={() => setShowAuthModal(true)}
           onShowAdmin={handleShowAdmin}
@@ -966,7 +1000,10 @@ export default function App() {
           <LandingGallery />
           <SocialProof />
           <FAQ />
-          <CategoryShowcase onCategoryClick={handleCategoryShowcaseClick} />
+          <CategoryShowcase
+            onCategoryClick={handleCategoryShowcaseClick}
+            onViewExamples={handleShowcaseExamples}
+          />
         </main>
 
         <Footer />

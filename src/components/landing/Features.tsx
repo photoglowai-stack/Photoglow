@@ -1,17 +1,18 @@
 import { memo } from 'react';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { 
-  Sparkles, 
-  Shield, 
-  Zap, 
-  Camera, 
-  Users, 
+import {
+  Sparkles,
+  Shield,
+  Zap,
+  Camera,
+  Users,
   Heart,
   Smartphone,
   Clock,
   Award
 } from 'lucide-react';
+import featureMock from '../../assets/5d083b8c046522abf88456dc17431671c7a94f0d.png';
 
 // Static data moved outside component to prevent re-creation
 const features = [
@@ -90,9 +91,20 @@ export const Features = memo(function Features() {
           </h2>
           
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Our advanced AI technology and user-first approach make us the #1 choice 
+            Our advanced AI technology and user-first approach make us the #1 choice
             for AI photo generation and enhancement.
           </p>
+        </div>
+
+        <div className="max-w-4xl mx-auto mb-12 animate-in fade-in duration-700 delay-150">
+          <div className="overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-purple-500/20">
+            <img
+              src={featureMock}
+              alt="PhotoGlow AI results preview"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          </div>
         </div>
 
         {/* Main Features Grid */}

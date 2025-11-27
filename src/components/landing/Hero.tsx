@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Star, Sparkles, Camera, ShoppingBag } from 'lucide-react';
 import { ScrollingMosaic } from '../shared/ScrollingMosaic';
+import heroPreviewMock from '../../assets/889909b48ee021025e71d69b390ad6902f141398.png';
 
 interface HeroSectionProps {
   onStartForm: (gender: 'male' | 'female') => void;
@@ -211,6 +212,17 @@ export const HeroSection = memo(function HeroSection({ onStartForm, onExploreMod
                 <p className="text-xs md:text-sm text-gray-500 mt-3 animate-in fade-in duration-700 delay-800">
                   No credit card required • Cancel anytime
                 </p>
+              </div>
+
+              <div className="mt-8 w-full max-w-3xl mx-auto animate-in fade-in duration-700 delay-800">
+                <div className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl shadow-pink-500/20 bg-white/5">
+                  <img
+                    src={heroPreviewMock}
+                    alt="AI photo generator preview"
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
               </div>
 
               {/* Social Proof - improved styling */}
