@@ -1,29 +1,116 @@
-// /api/credits.mjs
-// GET  /api/credits?health=1        → healthcheck (pas d'auth requise)
-// GET  /api/credits                 → lire le solde (auth Bearer obligatoire)
-// POST /api/credits {op, amount?, target_user_id?, target_email?}
-//     op ∈ debit|credit|reset|set
-//   - non-admin: debit|reset sur lui-même uniquement
-//   - admin (email ∈ ADMIN_EMAILS): debit|credit|reset|set sur soi ou une cible
-
 export const config = { runtime: "nodejs" };
 
 import { setCORS } from "../lib/http.mjs";
 import {
   ensureSupabaseClient,
   getSupabaseAnon,
+  getSupabaseEnv,
   getSupabaseServiceRole,
 } from "../lib/supabase.mjs";
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
-  .split(",")
-  .map(s => s.trim().toLowerCase());
-
-// Clients Supabase
-const supabaseAuth = getSupabaseAnon();
+const supabaseAnon = getSupabaseAnon();
 const supabaseAdmin = getSupabaseServiceRole();
 
-// Résoudre un user_id à partir d'un email (Admin API)
+const BUCKET_UPLOADS = process.env.BUCKET_UPLOADS || "photos";
+const BUCKET_IMAGES = process.env.BUCKET_IMAGES || "generated_images";
+const TABLE_META = process.env.TABLE_META || "photos_meta";
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
+  .split(",")
+  .map(s => s.trim().toLowerCase())
+  .filter(Boolean);
+
+function withQuery(req, urlObj) {
+  if (!req.query) {
+    req.query = Object.fromEntries(urlObj.searchParams.entries());
+  }
+  return req;
+}
+
+// ---------- SYSTEM ----------
+async function handleSystem(req, res) {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+
+  const isPing = req.url.endsWith("/system") && (req.query?.ping !== undefined || req.method === "HEAD");
+  if (isPing) return res.status(200).json({ ok: true, msg: "pong" });
+  if (req.url.endsWith("/ping")) return res.status(200).json({ ok: true, msg: "pong" });
+
+  try {
+    const env = getSupabaseEnv();
+    ensureSupabaseClient(supabaseAdmin, "service");
+    ensureSupabaseClient(supabaseAnon, "anon");
+
+    const checks = [];
+
+    if (supabaseAnon) {
+      try {
+        const { error } = await supabaseAnon.from("photos_meta").select("id").limit(1);
+        checks.push({ key: "db_photos_meta", ok: !error, error: error?.message || null });
+      } catch (e) {
+        checks.push({ key: "db_photos_meta", ok: false, error: String(e?.message || e) });
+      }
+    } else {
+      checks.push({ key: "db_photos_meta", ok: false, error: "missing_supabase_anon_client" });
+    }
+
+    if (supabaseAdmin) {
+      try {
+        const { data: buckets, error } = await supabaseAdmin.storage.listBuckets();
+        if (error) throw error;
+
+        const names = (buckets || []).map(b => b.name);
+        checks.push({ key: "bucket_uploads", expected: BUCKET_UPLOADS, ok: names.includes(BUCKET_UPLOADS), available: names });
+        checks.push({ key: "bucket_generated", expected: BUCKET_IMAGES, ok: names.includes(BUCKET_IMAGES) });
+      } catch (e) {
+        checks.push({ key: "buckets_list", ok: false, error: String(e?.message || e) });
+      }
+    } else {
+      checks.push({ key: "buckets_list", ok: false, error: "missing_supabase_service_client" });
+    }
+
+    const ok = checks.every(c => c.ok);
+    const payload = { ok, env: { BUCKET_UPLOADS, BUCKET_IMAGES, supabase: env }, checks };
+
+    if (!supabaseAdmin) {
+      payload.note = "storage_verification_unavailable";
+    }
+
+    return res.status(200).json(payload);
+  } catch (e) {
+    return res.status(500).json({ ok: false, error: e?.message || "internal_error" });
+  }
+}
+
+// ---------- PRESETS ----------
+async function handlePresets(req, res) {
+  try {
+    if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
+
+    if (!supabaseAnon) return res.status(500).json({ error: "missing_env_supabase" });
+    ensureSupabaseClient(supabaseAnon, "anon");
+
+    const { data: cats, error: e1 } = await supabaseAnon
+      .from("categories")
+      .select("slug,name,default_aspect_ratio,default_model,active")
+      .eq("active", true)
+      .order("name", { ascending: true });
+
+    if (e1) return res.status(500).json({ error: e1.message });
+
+    const { data: presets, error: e2 } = await supabaseAnon
+      .from("prompt_presets")
+      .select("id,category_slug,name,prompt,weight")
+      .order("weight", { ascending: true });
+
+    if (e2) return res.status(500).json({ error: e2.message });
+
+    return res.status(200).json({ success: true, categories: cats || [], presets: presets || [] });
+  } catch (e) {
+    console.error("❌ /api/presets error:", e?.message || e);
+    return res.status(500).json({ error: "internal_error" });
+  }
+}
+
+// ---------- CREDITS ----------
 async function resolveUserIdByEmail(email) {
   const { data: page1, error } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 500 });
   if (error) throw error;
@@ -33,7 +120,7 @@ async function resolveUserIdByEmail(email) {
   return hit?.id || null;
 }
 
-export default async function handler(req, res) {
+async function handleCredits(req, res) {
   setCORS(req, res, {
     allowMethods: "GET,POST,OPTIONS",
     allowHeaders: "content-type, authorization, idempotency-key",
@@ -41,7 +128,6 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   res.setHeader("Content-Type", "application/json; charset=utf-8");
 
-  // Healthcheck
   if (req.method === "GET" && (req.query?.health === "1" || req.query?.health === 1)) {
     return res.status(200).json({
       ok: true,
@@ -53,19 +139,18 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!supabaseAuth || !supabaseAdmin) {
+  if (!supabaseAnon || !supabaseAdmin) {
     return res.status(500).json({ success: false, error: "missing_env" });
   }
 
-  ensureSupabaseClient(supabaseAuth, "anon");
+  ensureSupabaseClient(supabaseAnon, "anon");
   ensureSupabaseClient(supabaseAdmin, "service");
 
-  // --- Auth Bearer (utilisateur courant) ---
   const auth = req.headers.authorization || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
   if (!token) return res.status(401).json({ success: false, error: "missing_bearer_token" });
 
-  const { data: userData, error: authErr } = await supabaseAuth.auth.getUser(token);
+  const { data: userData, error: authErr } = await supabaseAnon.auth.getUser(token);
   if (authErr || !userData?.user) {
     return res.status(401).json({ success: false, error: "invalid_token" });
   }
@@ -73,7 +158,6 @@ export default async function handler(req, res) {
   const requester_email = (userData.user.email || "").toLowerCase();
   const isAdmin = ADMIN_EMAILS.includes(requester_email);
 
-  // --- GET: lire le solde du demandeur ---
   if (req.method === "GET") {
     const { data: row, error: selErr } = await supabaseAdmin
       .from("user_credits")
@@ -85,7 +169,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ success: false, error: selErr.message });
     }
 
-    // Si pas de ligne → initialise à 0
     if (!row) {
       const { error: insErr } = await supabaseAdmin
         .from("user_credits")
@@ -97,14 +180,12 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, user_id: requester_id, credits: row.credits });
   }
 
-  // --- POST: opérations ---
   if (req.method === "POST") {
     const { op = "debit", amount = 1, target_user_id, target_email } = req.body || {};
     if (!["debit", "credit", "reset", "set"].includes(op)) {
       return res.status(400).json({ success: false, error: "invalid_op" });
     }
 
-    // Détermination de la cible
     let targetId = requester_id;
     if (isAdmin && (target_user_id || target_email)) {
       targetId = target_user_id || await resolveUserIdByEmail(target_email);
@@ -149,7 +230,6 @@ export default async function handler(req, res) {
         if (error) return res.status(500).json({ success: false, error: error.message });
       }
 
-      // Relire le solde après opération
       const { data: row2, error: sel2 } = await supabaseAdmin
         .from("user_credits")
         .select("credits")
@@ -157,13 +237,29 @@ export default async function handler(req, res) {
         .maybeSingle();
       if (sel2) return res.status(500).json({ success: false, error: sel2.message });
 
-      return res.status(200).json({
-        success: true, user_id: targetId, credits: row2?.credits ?? 0, op
-      });
+      return res.status(200).json({ success: true, user_id: targetId, credits: row2?.credits ?? 0, op });
     } catch (e) {
       return res.status(500).json({ success: false, error: String(e?.message || e) });
     }
   }
 
   return res.status(405).json({ success: false, error: "method_not_allowed" });
+}
+
+// ---------- ROUTER ----------
+export default async function handler(req, res) {
+  const urlObj = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+  const pathname = urlObj.pathname;
+  withQuery(req, urlObj);
+
+  const isSystem = pathname === "/api/system" || pathname.endsWith("/system") || pathname.endsWith("/system/");
+  const isPresets = pathname === "/api/presets" || pathname.endsWith("/presets") || pathname.endsWith("/presets/");
+  const isCredits = pathname === "/api/credits" || pathname.startsWith("/api/credits/");
+
+  if (isSystem) return handleSystem(req, res);
+  if (isPresets) return handlePresets(req, res);
+  if (isCredits) return handleCredits(req, res);
+
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  return res.status(404).json({ error: "not_found" });
 }
