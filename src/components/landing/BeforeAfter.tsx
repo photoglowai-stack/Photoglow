@@ -3,11 +3,14 @@ import { Badge } from '../ui/badge';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '../ui/button';
 import { LazyImage } from '../shared/LazyImage';
-import selfie1 from '../../assets/0add018c10f3889f2c712223ec4a093b5ddf753a.png';
-import selfie2 from '../../assets/2c508c4e08485a8f3e97314d1e81a5ddf454e5a1.png';
-import selfie3 from '../../assets/0690a5805cd67144f4f9f4968e8da6dc518fa63d.png';
-import selfie4 from '../../assets/e5d9a2a1cdcb17f07c69550c0cd20071344f5cec.png';
-import aiResult from '../../assets/122dcd2ebe2b9d58e158d5aa006fd43d2ea55ea8.png';
+
+// Replaced broken Figma imports with working Unsplash URLs
+// Original Figma assets were 70-byte placeholders
+const selfie1 = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&q=80';
+const selfie2 = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop&q=80';
+const selfie3 = 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&q=80';
+const selfie4 = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=500&fit=crop&q=80';
+const aiResult = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=800&fit=crop&q=80';
 
 interface BeforeAfterTransformationProps {
   onStartTransformation?: () => void;
@@ -32,7 +35,7 @@ export const BeforeAfterTransformation = memo(function BeforeAfterTransformation
     <section className="py-12 md:py-16 relative overflow-hidden bg-black">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-purple-950/5 to-black pointer-events-none" />
-      
+
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Section Title */}
         <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-6 duration-700">
@@ -62,7 +65,7 @@ export const BeforeAfterTransformation = memo(function BeforeAfterTransformation
                 />
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
+
                 {/* Border glow effect */}
                 <div className="absolute inset-0 border-2 border-purple-500/0 group-hover:border-purple-500/50 rounded-2xl transition-all duration-300" />
               </div>
@@ -75,7 +78,7 @@ export const BeforeAfterTransformation = memo(function BeforeAfterTransformation
             <div className="text-7xl animate-pulse">
               👉
             </div>
-            
+
             {/* AI Text */}
             <div className="px-4 py-2 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-full border border-purple-500/30">
               <span className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
@@ -109,7 +112,7 @@ export const BeforeAfterTransformation = memo(function BeforeAfterTransformation
                 blurhash="L8F5?a%M00~q00xu4n^%01-;00RP"
                 priority
               />
-              
+
               {/* AI Generated Badge */}
               <div className="absolute top-4 right-4 z-10">
                 <Badge className="bg-green-500 text-white border-0 px-4 py-2 text-xs font-bold uppercase shadow-lg">
@@ -122,7 +125,7 @@ export const BeforeAfterTransformation = memo(function BeforeAfterTransformation
 
               {/* Glow border effect */}
               <div className="absolute inset-0 border-4 border-transparent group-hover:border-purple-500/50 rounded-3xl transition-all duration-300" />
-              
+
               {/* Purple glow shadow on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 <div className="absolute inset-0 bg-purple-500/20 blur-2xl rounded-3xl" />
@@ -153,7 +156,7 @@ export const BeforeAfterTransformation = memo(function BeforeAfterTransformation
             <span>Start Your AI Transformation</span>
             <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform inline-block" />
           </Button>
-          
+
           <p className="mt-4 text-gray-400 text-sm">
             Upload 4-10 selfies • Get 32+ professional AI photos • Ready in 5 minutes
           </p>

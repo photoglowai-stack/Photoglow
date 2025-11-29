@@ -1,0 +1,78 @@
+# ======================================
+# FICHIERS À SUPPRIMER (Duplicatas)
+# ======================================
+
+# ======================================
+# AIPhotoGenerator Duplicates (2 fichiers)
+# Garder : /generator/AIPhotoGenerator.tsx (était V2)
+# ======================================
+components/AIPhotoGenerator.tsx
+components/AIPhotoGeneratorPatch.tsx
+
+# ======================================
+# Admin Duplicates (5 fichiers)
+# Garder : /admin/AdminUnified.tsx (était V2Unified)
+# ======================================
+components/AdminGenerateCategoriesClean.tsx
+components/AdminGenerateCategoriesPage.tsx
+components/AdminGenerateCategoriesPageV2.tsx
+components/AdminGenerateCategoriesSimple.tsx
+components/AdminGenerateIdeasSimple.tsx
+
+# ======================================
+# Flux Prompts Duplicates (5 fichiers)
+# Garder : fluxOptimizedPromptsFinal.ts
+# ======================================
+components/fluxOptimizedPrompts.ts
+components/fluxOptimizedPromptsComplete.ts
+components/fluxOptimizedPromptsComplete2.ts
+components/fluxOptimizedPromptsComplete3.ts
+components/fluxOptimizedPromptsExtended.ts
+
+# ======================================
+# Duplicates Already in /shared (7 fichiers)
+# ======================================
+components/AnimatedDiv.tsx
+components/Footer.tsx
+components/Header.tsx
+components/LazyImage.tsx
+components/LoadingSkeleton.tsx
+components/SEOHead.tsx
+components/ScrollingMosaic.tsx
+
+# ======================================
+# Duplicates Already in /pages (2 fichiers)
+# ======================================
+components/IdeasPage.tsx
+components/ProfilePage.tsx
+
+# ======================================
+# TOTAL : 21 fichiers à supprimer
+# ======================================
+
+# ======================================
+# COMMANDES BASH (Optionnel)
+# ======================================
+
+# Supprimer tous les duplicatas en une commande :
+rm -f components/AIPhotoGenerator.tsx
+rm -f components/AIPhotoGeneratorPatch.tsx
+rm -f components/AdminGenerateCategoriesClean.tsx
+rm -f components/AdminGenerateCategoriesPage.tsx
+rm -f components/AdminGenerateCategoriesPageV2.tsx
+rm -f components/AdminGenerateCategoriesSimple.tsx
+rm -f components/AdminGenerateIdeasSimple.tsx
+rm -f components/fluxOptimizedPrompts.ts
+rm -f components/fluxOptimizedPromptsComplete.ts
+rm -f components/fluxOptimizedPromptsComplete2.ts
+rm -f components/fluxOptimizedPromptsComplete3.ts
+rm -f components/fluxOptimizedPromptsExtended.ts
+rm -f components/AnimatedDiv.tsx
+rm -f components/Footer.tsx
+rm -f components/Header.tsx
+rm -f components/LazyImage.tsx
+rm -f components/LoadingSkeleton.tsx
+rm -f components/SEOHead.tsx
+rm -f components/ScrollingMosaic.tsx
+rm -f components/IdeasPage.tsx
+rm -f components/ProfilePage.tsx

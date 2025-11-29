@@ -1,0 +1,45 @@
+{
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 120
+    },
+    "app/api/**/*.ts": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 120
+    }
+  },
+  "routes": [
+    {
+      "src": "^/api/credits$",
+      "dest": "/api/credits.ts"
+    },
+    {
+      "src": "^/api/credits/debit$",
+      "dest": "/api/credits/debit.ts"
+    },
+    {
+      "src": "^/api/webhook$",
+      "dest": "/api/webhook.ts"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ]
+}

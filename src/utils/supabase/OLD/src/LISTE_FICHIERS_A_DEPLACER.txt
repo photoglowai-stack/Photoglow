@@ -1,0 +1,92 @@
+# ======================================
+# LISTE COMPLÈTE DES FICHIERS À DÉPLACER
+# ======================================
+
+# ======================================
+# ADMIN (6 fichiers)
+# ======================================
+components/AdminConsole.tsx → components/admin/AdminConsole.tsx
+components/AdminGenerateTab.tsx → components/admin/AdminGenerateTab.tsx
+components/AdminV2Unified.tsx → components/admin/AdminUnified.tsx
+components/HealthCheckPanel.tsx → components/admin/HealthCheckPanel.tsx
+components/SystemHealthPanel.tsx → components/admin/SystemHealthPanel.tsx
+components/CreditsDashboard.tsx → components/admin/CreditsDashboard.tsx
+
+# ======================================
+# CATEGORY (12 fichiers)
+# ======================================
+components/CategoryPage.tsx → components/category/CategoryPage.tsx
+components/CategoryPageHeader.tsx → components/category/Header.tsx
+components/CategoryFAQ.tsx → components/category/FAQ.tsx
+components/CategoryHowItWorks.tsx → components/category/HowItWorks.tsx
+components/CategoryTestimonials.tsx → components/category/Testimonials.tsx
+components/CategoryShowcase.tsx → components/category/Showcase.tsx
+components/CategoryExamplesPage.tsx → components/category/Examples.tsx
+components/CategoryPhotosCarousel.tsx → components/category/PhotosCarousel.tsx
+components/CategoryUniversalPage.tsx → components/category/Universal.tsx
+components/UniversalCategoryPage.tsx → components/category/UniversalAlt.tsx
+components/SimpleCategoryHero.tsx → components/category/SimpleHero.tsx
+components/SuggestedCategories.tsx → components/category/Suggested.tsx
+
+# ======================================
+# GENERATOR (8 fichiers)
+# ======================================
+components/AIPhotoGeneratorV2.tsx → components/generator/AIPhotoGenerator.tsx
+components/Gen4Panel.tsx → components/generator/Gen4Panel.tsx
+components/CreateAIModelTab.tsx → components/generator/CreateModel.tsx
+components/PreviewAIModelTab.tsx → components/generator/PreviewModel.tsx
+components/GenerateJobsTab.tsx → components/generator/JobsTab.tsx
+components/ExploreAIModelsPage.tsx → components/generator/ExploreModels.tsx
+components/ExploreAIStyles.tsx → components/generator/ExploreStyles.tsx
+components/AIStylesSection.tsx → components/generator/StylesSection.tsx
+
+# ======================================
+# PAYMENT (3 fichiers)
+# ======================================
+components/PhotoGlowPricing.tsx → components/payment/Pricing.tsx
+components/FigmaStylePaymentPage.tsx → components/payment/FigmaStyle.tsx
+components/TinderPaymentPage.tsx → components/payment/Tinder.tsx
+
+# ======================================
+# GALLERY (4 fichiers)
+# ======================================
+components/UnifiedGallery.tsx → components/gallery/Unified.tsx
+components/VirtualGallery.tsx → components/gallery/Virtual.tsx
+components/VideosGalleryPage.tsx → components/gallery/Videos.tsx
+components/PhotoDetailPage.tsx → components/gallery/PhotoDetail.tsx
+
+# ======================================
+# LANDING (15 fichiers)
+# ======================================
+components/HeroSection.tsx → components/landing/Hero.tsx
+components/BeforeAfterTransformation.tsx → components/landing/BeforeAfter.tsx
+components/PhotoExamples.tsx → components/landing/PhotoExamples.tsx
+components/ComparisonSection.tsx → components/landing/Comparison.tsx
+components/HowItWorks.tsx → components/landing/HowItWorks.tsx
+components/Features.tsx → components/landing/Features.tsx
+components/FAQ.tsx → components/landing/FAQ.tsx
+components/CentralCTA.tsx → components/landing/CentralCTA.tsx
+components/SocialProof.tsx → components/landing/SocialProof.tsx
+components/AsSeenOn.tsx → components/landing/AsSeenOn.tsx
+components/FeaturedIn.tsx → components/landing/FeaturedIn.tsx
+components/StickyEmailBar.tsx → components/landing/StickyEmailBar.tsx
+components/InstagramPreview.tsx → components/landing/InstagramPreview.tsx
+components/HorizontalTransformCarousel.tsx → components/landing/HorizontalCarousel.tsx
+components/OptimizedAnimatedBackground.tsx → components/landing/AnimatedBackground.tsx
+
+# ======================================
+# AUTH (1 fichier)
+# ======================================
+components/AuthModal.tsx → components/auth/Modal.tsx
+
+# ======================================
+# PAGES (4 fichiers - optionnel si déjà dans /pages)
+# ======================================
+components/PhotoGlowPage.tsx → components/pages/PhotoGlowPage.tsx
+components/PhotoGlowPageWrapper.tsx → components/pages/PhotoGlowPageWrapper.tsx
+components/CreateVideoPage.tsx → components/pages/CreateVideo.tsx
+components/ReplicateStatusBanner.tsx → components/pages/ReplicateStatusBanner.tsx
+
+# ======================================
+# TOTAL : 53 fichiers à déplacer
+# ======================================

@@ -1,0 +1,552 @@
+═══════════════════════════════════════════════════════════════════════════════
+  GUIDE : COMMENT COMMUNIQUER EFFICACEMENT AVEC L'ASSISTANT FIGMA MAKE
+═══════════════════════════════════════════════════════════════════════════════
+
+Ce guide explique comment me donner des instructions pour obtenir les meilleurs 
+résultats et éviter les erreurs ou malentendus.
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 TABLE DES MATIÈRES
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Structure d'une bonne demande
+2. Contexte à fournir
+3. Types de demandes et comment les formuler
+4. Bonnes pratiques
+5. Ce qu'il faut éviter
+6. Exemples concrets (bons vs mauvais)
+7. Cas spéciaux (backend, debug, optimisations)
+
+═══════════════════════════════════════════════════════════════════════════════
+1. STRUCTURE D'UNE BONNE DEMANDE
+═══════════════════════════════════════════════════════════════════════════════
+
+Format idéal en 3 parties :
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ## Contexte                                                                 │
+│ Expliquez l'état actuel du projet, ce qui fonctionne, ce qui a été fait.   │
+│                                                                             │
+│ ## Problème / Objectif                                                     │
+│ Décrivez précisément ce qui ne va pas OU ce que vous voulez ajouter.       │
+│                                                                             │
+│ ## Résultat attendu                                                        │
+│ Expliquez comment ça devrait fonctionner après la modification.            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✅ EXEMPLE PARFAIT :
+
+## Contexte
+J'ai une interface AIPhotoGenerator avec 3 modes de création (person, object-decor, 
+virtual-tryon) utilisant des boutons radio.
+
+## Problème
+Quand je clique sur "Upload Object/Decor", la section conditionnelle ne s'affiche 
+pas visuellement. Pas d'erreur console, mais le state ne change pas.
+
+## Résultat attendu
+Je veux que cliquer sur n'importe quel mode affiche clairement la section 
+correspondante en dessous avec un feedback visuel (bordure, fond coloré).
+
+
+═══════════════════════════════════════════════════════════════════════════════
+2. CONTEXTE À FOURNIR
+═══════════════════════════════════════════════════════════════════════════════
+
+Information ESSENTIELLE au début de chaque conversation :
+
+✅ À TOUJOURS MENTIONNER :
+────────────────────────────
+• Nom du projet / page concernée
+  Ex: "PhotoGlow - Page de génération d'images"
+
+• Stack technique utilisée
+  Ex: "React + TypeScript + Supabase + Pollinations API"
+
+• Fichiers principaux concernés
+  Ex: "/components/AIPhotoGeneratorV2.tsx"
+
+• État du développement
+  Ex: "L'auth est complète, le backend est prêt, on travaille sur l'UI"
+
+• Fonctionnalités récemment ajoutées
+  Ex: "On vient d'ajouter la génération vidéo avec upload d'image source"
+
+
+📦 CONTEXTE BACKEND (si applicable) :
+────────────────────────────────────
+• API/Endpoints utilisés
+  Ex: "/make-server-ab844084/generate-image"
+
+• Base de données / tables
+  Ex: "Table kv_store avec format key-value"
+
+• Services externes
+  Ex: "Pollinations avec modèle FLUX pour les images"
+
+
+🎨 CONTEXTE UI/UX (si applicable) :
+──────────────────────────────────
+• Design system / couleurs
+  Ex: "Design sombre avec accents rose/violet (pink-500, purple-500)"
+
+• Layout / structure
+  Ex: "Interface en 2 colonnes : contrôles à gauche (380px), résultats à droite"
+
+• Composants UI utilisés
+  Ex: "shadcn/ui (Button, Card, Select, RadioGroup)"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+3. TYPES DE DEMANDES ET COMMENT LES FORMULER
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🐛 CORRECTION DE BUG                                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✅ BON :
+"Quand je clique sur le bouton 'Generate', j'obtiens une erreur 404. 
+Le endpoint appelé est '/api/generate' mais le backend utilise 
+'/make-server-ab844084/generate'. Peux-tu corriger l'URL dans le fetch ?"
+
+❌ MAUVAIS :
+"Ça marche pas"
+"Il y a une erreur"
+"Le bouton ne fonctionne pas"
+
+📌 Informations clés pour un bug :
+   • Quelle action déclenche le bug ?
+   • Quel message d'erreur (console, UI) ?
+   • Quel comportement attendu vs actuel ?
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ✨ NOUVELLE FONCTIONNALITÉ                                                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✅ BON :
+"Je veux ajouter un système de favoris pour les images générées. 
+Quand l'utilisateur clique sur une icône cœur, l'image doit être sauvegardée 
+dans Supabase (table kv_store avec key 'favorites-{userId}-{imageId}'). 
+L'icône doit devenir rouge quand l'image est favorite."
+
+❌ MAUVAIS :
+"Ajoute des favoris"
+"Je veux pouvoir sauvegarder les images"
+
+📌 Informations clés pour une feature :
+   • Où dans l'interface ? (quel composant ?)
+   • Quelles interactions utilisateur ?
+   • Où stocker les données ?
+   • Quel style visuel ?
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🎨 MODIFICATION UI/STYLE                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✅ BON :
+"Dans AIPhotoGeneratorV2, change le bouton 'Generate Images' : 
+• Couleur : gradient rose-500 vers purple-600
+• Taille : h-14 (au lieu de h-12)
+• Texte : plus gros (text-lg)
+• Ajoute une ombre : shadow-lg shadow-purple-500/30"
+
+❌ MAUVAIS :
+"Rends le bouton plus beau"
+"Change les couleurs"
+
+📌 Informations clés pour le style :
+   • Composant / élément exact
+   • Classes Tailwind spécifiques OU description visuelle précise
+   • Comportement hover/actif si applicable
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🔄 REFACTORING / RÉORGANISATION                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✅ BON :
+"Le composant AIPhotoGenerator.tsx est trop gros (1200 lignes). 
+Peux-tu extraire la partie 'Model Selection' dans un composant séparé 
+'/components/ModelSelector.tsx' ? Garde les mêmes props et comportement."
+
+❌ MAUVAIS :
+"Le code est trop long"
+"Nettoie le code"
+
+📌 Informations clés pour un refactor :
+   • Quel fichier / section ?
+   • Nouvelle structure souhaitée
+   • Contraintes à respecter (backward compatibility, props, etc.)
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🔌 INTÉGRATION API / BACKEND                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+✅ BON :
+"Connecte le bouton 'Generate Video' à l'endpoint backend. 
+URL : https://{projectId}.supabase.co/functions/v1/make-server-ab844084/create-video
+Method : POST
+Body : { prompt: string, sourceImageUrl: string, duration: number }
+Auth : Bearer token dans header
+Response attendue : { success: boolean, videoUrl: string, jobId: string }"
+
+❌ MAUVAIS :
+"Connecte l'API"
+"Ajoute l'appel backend"
+
+📌 Informations clés pour une API :
+   • URL complète de l'endpoint
+   • Method (GET/POST/DELETE)
+   • Payload structure
+   • Headers nécessaires
+   • Format de réponse attendu
+
+
+═══════════════════════════════════════════════════════════════════════════════
+4. BONNES PRATIQUES
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ FAIRE :
+───────────
+
+1. Donner le CONTEXTE au début de la conversation
+   "Je développe PhotoGlow, une app de génération de photos AI..."
+
+2. Préciser le FICHIER concerné
+   "Dans /components/AIPhotoGeneratorV2.tsx, ligne 150..."
+
+3. Copier/coller les MESSAGES D'ERREUR exacts
+   "Error: TypeError: Cannot read property 'map' of undefined at line 234"
+
+4. Décrire le COMPORTEMENT ACTUEL vs ATTENDU
+   "Actuellement : rien ne se passe
+    Attendu : une modal de preview s'ouvre"
+
+5. Mentionner ce qui a DÉJÀ ÉTÉ TESTÉ
+   "J'ai vérifié que le state se met à jour correctement avec console.log"
+
+6. Être SPÉCIFIQUE sur les noms
+   "Renomme l'onglet 'Prompts' en 'Examples'"
+   (pas "change le nom de l'onglet")
+
+7. Préciser les CONTRAINTES
+   "Sans changer le reste du layout"
+   "En gardant la compatibilité avec les anciennes données"
+
+8. Demander une EXPLICATION si besoin
+   "Peux-tu m'expliquer pourquoi tu utilises useEffect ici ?"
+
+
+❌ ÉVITER :
+───────────
+
+1. Instructions vagues
+   ❌ "Améliore ça"
+   ❌ "Répare le bug"
+   ❌ "Optimise le code"
+
+2. Supposer que je connais votre historique
+   ❌ "Comme on a fait hier pour l'autre page"
+   ❌ "Le même problème que la dernière fois"
+
+3. Demandes multiples non structurées
+   ❌ "Change le bouton et corrige l'erreur et ajoute une feature et..."
+   ✅ Numérotez : "3 modifications :
+       1. Bouton : change la couleur
+       2. Bug : corrige l'erreur 404
+       3. Feature : ajoute les favoris"
+
+4. Manque de précision sur les fichiers
+   ❌ "Dans le générateur"
+   ✅ "Dans /components/AIPhotoGeneratorV2.tsx"
+
+5. Oublier le cas d'erreur
+   ❌ "Appelle l'API"
+   ✅ "Appelle l'API et affiche un toast d'erreur si ça échoue"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+5. EXEMPLES CONCRETS (BONS vs MAUVAIS)
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ EXEMPLE 1 : Modifier un composant                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+❌ MAUVAIS :
+"Le menu ne marche pas bien, corrige-le"
+
+✅ BON :
+"Dans Header.tsx, quand je clique sur le burger menu mobile, le menu s'ouvre 
+mais ne se ferme pas quand je reclique. Le state 'isMenuOpen' se met bien à jour 
+(vérifié avec console.log). Je pense que c'est un problème de z-index ou 
+d'event listener. Peux-tu vérifier ?"
+
+─────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ EXEMPLE 2 : Ajouter une fonctionnalité                                     │
+└────────────────────────────────────────────���────────────────────────────────┘
+
+❌ MAUVAIS :
+"Ajoute un système de filtres"
+
+✅ BON :
+"Je veux ajouter des filtres sur la page Images Generated. 
+Ajoute 3 boutons au-dessus de la grille d'images :
+• 'All' (affiché par défaut)
+• 'Favorites' (affiche seulement les images avec saved: true)
+• 'Recent' (affiche les 10 dernières images)
+Style : même design que les boutons Create Image/Create Video (gradient violet/rose 
+quand actif, bg-[#18181B] sinon).
+Position : en haut à droite, à côté du badge qui affiche le nombre d'images."
+
+─────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ EXEMPLE 3 : Debugging                                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+❌ MAUVAIS :
+"Ça bug lors de la génération"
+
+✅ BON :
+"Quand je génère une image, j'obtiens cette erreur dans la console :
+'Error: Failed to fetch - TypeError at AIPhotoGeneratorV2.tsx:342'
+
+Contexte :
+• L'URL appelée : https://xyz.supabase.co/functions/v1/make-server-ab844084/generate
+• Le payload envoyé : { prompt: 'test', modelId: 'abc123', format: 'portrait' }
+• Le header Authorization est bien présent (vérifié avec Network tab)
+
+Le backend /supabase/functions/server/index.tsx a bien la route '/generate' 
+définie. Peut-être un problème CORS ?"
+
+─────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ EXEMPLE 4 : Modification de style                                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+❌ MAUVAIS :
+"Rends les cards plus jolies"
+
+✅ BON :
+"Dans la grille d'images générées (AIPhotoGeneratorV2.tsx, ligne ~670), 
+modifie le style des Cards :
+• Ajoute un effet hover : scale-105 + shadow-2xl
+• Change la bordure : de border-white/10 vers border-purple-500/30
+• Ajoute un gradient au fond : bg-gradient-to-br from-[#18181B] to-[#1a1a1f]
+• Anime la transition : transition-all duration-300"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+6. CAS SPÉCIAUX
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🔧 BACKEND / SUPABASE                                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Précisez TOUJOURS :
+✓ Le fichier : /supabase/functions/server/index.tsx
+✓ La route exacte : app.post('/make-server-ab844084/generate-video', ...)
+✓ Le format de données : "Les vidéos sont stockées dans kv_store avec 
+  key format 'video-{userId}-{timestamp}'"
+✓ Les credentials : "Utilise SUPABASE_SERVICE_ROLE_KEY (pas ANON_KEY) 
+  car il faut écrire dans Storage"
+
+Exemple complet :
+"Ajoute une route DELETE dans /supabase/functions/server/index.tsx :
+• Path : /make-server-ab844084/delete-image/:imageId
+• Auth requise : vérifie access_token et vérifie que l'image appartient à l'user
+• Action : supprime la clé 'image-{userId}-{imageId}' du kv_store
+• Response : { success: true } ou { success: false, error: string }"
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🐞 DEBUG / INVESTIGATION                                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Pour m'aider à debugger :
+✓ Copiez le message d'erreur EXACT (console + stack trace)
+✓ Indiquez le fichier et la ligne précise
+✓ Décrivez les étapes pour reproduire
+✓ Partagez les valeurs des variables importantes (console.log)
+✓ Mentionnez ce qui FONCTIONNE (pour éliminer des causes)
+
+Format idéal :
+"DEBUG NEEDED
+
+Erreur : TypeError: Cannot read property 'url' of undefined
+Fichier : /components/AIPhotoGeneratorV2.tsx:567
+Ligne : const imageUrl = generatedImages[0].url
+
+Steps to reproduce :
+1. Ouvrir l'app
+2. Cliquer sur 'Create Image'
+3. Entrer un prompt
+4. Cliquer sur 'Generate'
+5. Error apparaît après 2 secondes
+
+Console logs :
+• generatedImages avant l'erreur : []
+• isGenerating: true → false
+• Session : présente, user.id = 'xyz123'
+
+Ce qui fonctionne :
+• L'API répond (200 OK dans Network tab)
+• Le state isGenerating change bien
+• Pas d'erreur CORS"
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ⚡ OPTIMISATION / PERFORMANCE                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Précisez :
+✓ Le problème de performance observé
+✓ Les métriques actuelles (bundle size, load time, etc.)
+✓ L'objectif souhaité
+✓ Les contraintes (ne pas casser les features existantes)
+
+Exemple :
+"OPTIMISATION
+
+Problème : Le bundle est trop gros (450KB). On a migré vers CSS natif pour 
+réduire les animations, mais il reste les icônes lucide-react.
+
+Objectif : Réduire à <200KB
+
+Solution envisagée : Remplacer les icônes lucide-react par des SVG inline 
+pour les 10 icônes les plus utilisées (Sparkles, Upload, Download, etc.)
+
+Contrainte : Garder le même style visuel (taille, couleur, etc.)
+
+Peux-tu :
+1. Lister les 10 icônes les plus utilisées dans le projet
+2. Les remplacer par des SVG inline
+3. Créer un helper /utils/icons.tsx pour centraliser"
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 📝 REFACTORING MAJEUR                                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Pour un gros refactor :
+✓ Expliquez POURQUOI (code trop complexe, duplication, etc.)
+✓ Décrivez la STRUCTURE CIBLE
+✓ Listez les fichiers impactés
+✓ Mentionnez les tests à préserver
+
+Exemple :
+"REFACTORING : Séparation des préoccupations dans AIPhotoGenerator
+
+Problème actuel :
+• AIPhotoGeneratorV2.tsx fait 1500 lignes
+• Logique génération + UI + state management mélangés
+• Difficile à maintenir
+
+Structure cible :
+/components/generator/
+  ├── AIPhotoGeneratorV2.tsx (container principal, 200 lignes)
+  ├── ImageGeneratorPanel.tsx (UI création image)
+  ├── VideoGeneratorPanel.tsx (UI création vidéo)
+  ├── ResultsGallery.tsx (affichage grille résultats)
+  └── hooks/
+      ├── useImageGeneration.ts (logique génération)
+      └── useGeneratedContent.ts (fetch depuis Supabase)
+
+Contraintes :
+• Garder les mêmes props de AIPhotoGeneratorV2
+• Ne pas casser l'import dans App.tsx
+• Conserver tous les états (credits, session, etc.)
+
+Peux-tu faire ce refactor en :
+1. Créant les nouveaux fichiers
+2. Migrant la logique
+3. Testant que tout fonctionne (pas de régression)
+4. Supprimant l'ancien code dupliqué"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+7. CHECKLIST AVANT DE POSTER VOTRE MESSAGE
+═══════════════════════════════════════════════════════════════════════════════
+
+Avant de m'envoyer votre demande, vérifiez :
+
+□ J'ai donné le CONTEXTE (nom du projet, fichiers concernés)
+□ J'ai précisé le FICHIER exact (/path/to/file.tsx)
+□ J'ai décrit le PROBLÈME clairement (ou la feature voulue)
+□ J'ai indiqué le RÉSULTAT ATTENDU
+□ Si c'est un bug : j'ai copié le MESSAGE D'ERREUR
+□ Si c'est du style : j'ai donné les CLASSES TAILWIND ou description précise
+□ Si c'est une API : j'ai donné l'URL, method, payload, response attendue
+□ J'ai mentionné les CONTRAINTES (ne pas casser X, garder Y)
+□ Ma demande est SPÉCIFIQUE, pas vague
+
+
+═══════════════════════════════════════════════════════════════════════════════
+8. RACCOURCIS / FORMAT RAPIDE
+═══════════════════════════════════════════════════════════════════════════════
+
+Pour les demandes simples, vous pouvez utiliser ce format court :
+
+┌────────────────────────────────────────────┐
+│ FICHIER : /path/to/file.tsx               │
+│ ACTION : [Corriger|Ajouter|Modifier|Debug] │
+│ DÉTAILS : ...                              │
+│ RÉSULTAT : ...                             │
+└────────────────────────────────────────────┘
+
+Exemple :
+─────────────────────────────────────────────
+FICHIER : /components/AIPhotoGeneratorV2.tsx
+ACTION : Modifier
+DÉTAILS : Ligne 450, change 'Create Image' → 'Generate Image'
+RÉSULTAT : Le bouton doit afficher 'Generate Image'
+─────────────────────────────────────────────
+
+
+═══════════════════════════════════════════════════════════════════════════════
+9. RÉSUMÉ : LES 3 RÈGLES D'OR
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣  CONTEXTE : Toujours donner le contexte au début
+    "Je travaille sur PhotoGlow, un app de génération d'images AI..."
+
+2️⃣  PRÉCISION : Être précis sur les fichiers, lignes, comportements
+    "Dans /components/Header.tsx ligne 42, le bouton..."
+
+3️⃣  OBJECTIF : Décrire clairement le résultat attendu
+    "Je veux que le bouton affiche un loader pendant l'appel API"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📚 RESSOURCES COMPLÉMENTAIRES
+═══════════════════════════════════════════════════════════════════════════════
+
+• Guidelines.md : Architecture et bonnes pratiques du projet
+• README.md : Documentation générale
+• QUICK_DEPLOY_V6.md : Guide de déploiement
+
+
+═══════════════════════════════════════════════════════════════════════════════
+❓ QUESTIONS ?
+═══════════════════════════════════════════════════════════════════════════════
+
+Si ce guide n'est pas clair ou si vous avez des questions spécifiques, 
+dites-moi simplement :
+
+"Je ne sais pas comment formuler ma demande pour [situation spécifique]"
+
+Et je vous guiderai ! 😊
+
+
+═══════════════════════════════════════════════════════════════════════════════
+Version 1.0 - Créé le 3 novembre 2024
+═══════════════════════════════════════════════════════════════════════════════

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { supabase } from "../../utils/supabase/client";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
-import { Label } from "./ui/label";
-import { Card } from "./ui/card";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { Card } from "../ui/card";
 import { Loader2, Upload, Sparkles, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { ReplicateStatusBanner, useReplicateStatus } from "./ReplicateStatusBanner";
 import { API_ENDPOINTS } from "../../utils/config";
 
-type GenItem = { 
-  id: string; 
-  image_url: string; 
+type GenItem = {
+  id: string;
+  image_url: string;
   created_at: string;
   prompt: string;
 };
@@ -24,34 +24,34 @@ export default function Gen4Panel() {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [items, setItems] = useState<GenItem[]>([]);
   const [loading, setLoading] = useState(false);
-  
+
   // Replicate status management
   const { status: replicateStatus, showReplicateError, hideReplicateError } = useReplicateStatus();
 
   // Upload file to Supabase Storage
   async function uploadToSupabase(file: File | null): Promise<string | null> {
     if (!file) return null;
-    
+
     try {
       const path = `uploads/${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
-      
+
       const { data, error } = await supabase.storage
         .from("photos")
         .upload(path, file, {
           cacheControl: "3600",
           upsert: false
         });
-      
+
       if (error) {
         console.error("Upload error:", error);
         toast.error(`Upload failed: ${error.message}`);
         return null;
       }
-      
+
       const { data: pub } = supabase.storage
         .from("photos")
         .getPublicUrl(path);
-      
+
       return pub?.publicUrl ?? null;
     } catch (error: any) {
       console.error("Upload exception:", error);
@@ -69,7 +69,7 @@ export default function Gen4Panel() {
 
     try {
       setLoading(true);
-      
+
       // 1) Upload reference images (if provided)
       toast.info("Uploading reference images...");
       const [selfieUrl, extra1Url, extra2Url] = await Promise.all([
@@ -79,16 +79,16 @@ export default function Gen4Panel() {
       ]);
 
       const refs = [selfieUrl, extra1Url, extra2Url].filter(Boolean);
-      
+
       console.log("📸 Reference images uploaded:", refs);
 
       // 2) Call Gen-4 API
       toast.info("Calling Gen-4 API...");
       console.log("🎬 Calling Gen-4 with prompt:", prompt);
-      
+
       // Determine mode
       const mode = refs.length > 0 ? "img2img" : "text2img";
-      
+
       const res = await fetch(API_ENDPOINTS.generateGen4, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -102,13 +102,13 @@ export default function Gen4Panel() {
       });
 
       const data = await res.json();
-      
+
       if (!res.ok) {
         console.error("❌ Gen4 error:", data);
-        
+
         // Handle specific error types
         const errorMsg = data.error || "Unknown error";
-        
+
         if (errorMsg.includes('402') || errorMsg.includes('Payment Required')) {
           showReplicateError(errorMsg);
           toast.error('⚠️ Replicate API credits exhausted', { duration: 5000 });
@@ -136,30 +136,30 @@ export default function Gen4Panel() {
 
       // 3) Preview + add to gallery
       setPreviewUrl(data.image_url);
-      
+
       const newItem: GenItem = {
         id: crypto.randomUUID(),
         image_url: data.image_url,
         prompt,
         created_at: new Date().toISOString()
       };
-      
+
       setItems(prev => [newItem, ...prev]);
-      
+
       toast.success("Image generated successfully! 🎉");
-      
+
       // Reset form
       setPrompt("");
       setSelfie(null);
       setExtra1(null);
       setExtra2(null);
-      
+
     } catch (error: any) {
       console.error("❌ Generation exception:", error);
-      
+
       // Enhanced error handling
       const errorMsg = error?.message || "Generation error";
-      
+
       if (errorMsg.includes('402') || errorMsg.includes('Payment Required')) {
         showReplicateError(errorMsg);
         toast.error('⚠️ Replicate API credits exhausted', { duration: 5000 });
@@ -177,7 +177,7 @@ export default function Gen4Panel() {
   return (
     <div className="p-6 space-y-6 bg-[#0B0B0D] min-h-screen">
       {/* Replicate Status Banner */}
-      <ReplicateStatusBanner 
+      <ReplicateStatusBanner
         show={replicateStatus.show}
         errorMessage={replicateStatus.errorMessage}
         onClose={hideReplicateError}
@@ -319,7 +319,7 @@ export default function Gen4Panel() {
             <h3 className="text-xl font-semibold text-white">Gallery</h3>
             <span className="text-sm text-gray-400">({items.length} images)</span>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {items.map((item) => (
               <Card key={item.id} className="overflow-hidden bg-[#18181B] border-purple-500/20 hover:border-purple-500/50 transition-colors">
